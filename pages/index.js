@@ -1,65 +1,73 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import Head from "next/head";
+import Link from "next/link";
+import firebaseApp from "../utils/firebaseConfig";
+import Layout from "../components/Layout";
+import useAuth, { ProtectRoute } from "../context/auth";
 
-export default function Home() {
+function Home() {
+  const {
+    user,
+    isAdmin,
+    isLoggedIn,
+    userLoading
+  } = useAuth();
   return (
-    <div className={styles.container}>
+    <Layout>
       <Head>
-        <title>Create Next App</title>
+        <title>Voting App</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+      <div className="-mt-8 h-screen flex flex-col justify-center items-center px-2">
+        <img
+          className="px-12 mb-3 md:max-w-md md:mb-6"
+          src="/svg/undraw_online_connection_6778.svg"
+        />
+        <div className="text-xl font-bold text-center md:text-3xl">
+          Welcome to Resident's Chief Voting
         </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
-  )
+        <div className="text-md text-center">
+          Click the login button below to start voting
+        </div>
+        <div className="mt-2">
+          {userLoading ? 'Please Wait...' : !isLoggedIn ? (
+            <>
+              <Link href="/auth/login">
+                <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                  Login
+                </button>
+              </Link>
+              <Link href="/auth/register">
+                <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2">
+                  Register
+                </button>
+              </Link>
+            </>
+          ) : (
+            <>
+              {isAdmin == "1" ? (
+                <Link href="/admin">
+                  <button className="bg-purple-600 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded ml-2">
+                    Admin
+                  </button>
+                </Link>
+              ) : null}
+              <Link href="/vote">
+                <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2">
+                  Vote
+                </button>
+              </Link>
+              <button
+                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-2"
+                onClick={() => firebaseApp.auth().signOut()}
+              >
+                Log Out
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    </Layout>
+  );
 }
+
+export default ProtectRoute(Home)
