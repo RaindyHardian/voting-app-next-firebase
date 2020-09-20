@@ -1,5 +1,6 @@
 import { useState } from "react";
 import firebaseApp from "../../../utils/firebaseConfig";
+import firebase from "firebase";
 import {
   Modal,
   ModalOverlay,
@@ -8,16 +9,59 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  useDisclosure
+  useDisclosure,
+  Spinner
 } from "@chakra-ui/core";
+import { format } from "date-fns";
 
 const EditElection = props => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [title, setTitle] = useState(props.election.title);
   const [description, setDescription] = useState(props.election.description);
-  const [start, setStart] = useState(props.election.start);
-  const [end, setEnd] = useState(props.election.end);
+  const [year, setYear] = useState(props.election.year);
+  const [startDate, setStartDate] = useState(
+    format(props.election.start.toDate(), "yyyy-MM-dd")
+  );
+  const [startTime, setStartTime] = useState(
+    format(props.election.start.toDate(), "HH:mm:ss")
+  );
+  const [endDate, setEndDate] = useState(
+    format(props.election.end.toDate(), "yyyy-MM-dd")
+  );
+  const [endTime, setEndTime] = useState(
+    format(props.election.end.toDate(), "HH:mm:ss")
+  );
   const [active, setActive] = useState(props.election.active);
+
+  const [loading, setLoading] = useState(false);
+
+  const submit = e => {
+    e.preventDefault();
+    setLoading(true);
+    firebaseApp
+      .firestore()
+      .collection("elections")
+      .doc(props.e_id)
+      .update({
+        title: title,
+        description: description,
+        year: year,
+        start: firebase.firestore.Timestamp.fromDate(
+          new Date(startDate + " " + startTime)
+        ),
+        end: firebase.firestore.Timestamp.fromDate(
+          new Date(endDate + " " + endTime)
+        ),
+        active: active
+      })
+      .then(() => {
+        setLoading(false);
+      })
+      .catch(err => {
+        console.log(err);
+        setLoading(false);
+      });
+  };
 
   return (
     <div>
@@ -44,7 +88,7 @@ const EditElection = props => {
           <ModalHeader>Edit Election</ModalHeader>
           <ModalCloseButton />
           <ModalBody className="overflow-x-auto">
-            <form className="w-full max-w-sm">
+            <form className="w-full" onSubmit={submit}>
               <div className="md:flex md:items-center mb-6">
                 <div className="md:w-1/3">
                   <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
@@ -78,15 +122,38 @@ const EditElection = props => {
               <div className="md:flex md:items-center mb-6">
                 <div className="md:w-1/3">
                   <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
-                    Start
+                    Year
                   </label>
                 </div>
                 <div className="md:w-2/3">
                   <input
                     className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                    type="text"
+                    value={year}
+                    onChange={e => setYear(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="md:flex md:items-center mb-6">
+                <div className="md:w-1/3">
+                  <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
+                    Start
+                  </label>
+                </div>
+                <div className="md:w-1/3">
+                  <input
+                    className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                    type="date"
+                    value={startDate}
+                    onChange={e => setStartDate(e.target.value)}
+                  />
+                </div>
+                <div className="md:w-1/3">
+                  <input
+                    className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                     type="time"
-                    // value={start.toDate().toString()}
-                    // onChange={(e)=>setTitle(e.target.value)}
+                    value={startTime}
+                    onChange={e => setStartTime(e.target.value)}
                   />
                 </div>
               </div>
@@ -96,12 +163,20 @@ const EditElection = props => {
                     End
                   </label>
                 </div>
-                <div className="md:w-2/3">
+                <div className="md:w-1/3">
                   <input
                     className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                    type="datetime-local"
-                    // value={title}
-                    onChange={e => console.log(e.target.value)}
+                    type="date"
+                    value={endDate}
+                    onChange={e => setEndDate(e.target.value)}
+                  />
+                </div>
+                <div className="md:w-1/3">
+                  <input
+                    className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                    type="time"
+                    value={endTime}
+                    onChange={e => setEndTime(e.target.value)}
                   />
                 </div>
               </div>
@@ -125,19 +200,21 @@ const EditElection = props => {
               </div>
               <div className="md:flex md:items-center">
                 <div className="md:w-1/3"></div>
-                <div className="md:w-2/3">
+                <div className="md:w-2/3 flex flex-row items-center">
                   <button
                     className="shadow bg-red-500 hover:bg-red-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded mr-2"
                     type="button"
+                    onClick={onClose}
                   >
                     Cancel
                   </button>
                   <button
-                    className="shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
-                    type="button"
+                    className="shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded mr-3"
+                    type="submit"
                   >
                     Save
                   </button>
+                  {loading ? <Spinner /> : null}
                 </div>
               </div>
             </form>

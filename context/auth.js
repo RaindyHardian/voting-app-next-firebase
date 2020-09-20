@@ -108,11 +108,29 @@ export default function useAuth() {
 
 export function ProtectRoute(Component) {
   return () => {
+    const { isLoggedIn, userLoading, isAdmin } = useAuth();
+    const router = useRouter();
+
+    useEffect(() => {
+      if ((!isLoggedIn && !userLoading) || !isAdmin) {
+        router.push("/");
+      }
+      // if(!isAdmin){
+      //   router.push("/")
+      // }
+    }, [userLoading, isLoggedIn, isAdmin]);
+
+    return <Component {...arguments} />;
+  };
+}
+
+export function ProtectUserRoute(Component) {
+  return () => {
     const { isLoggedIn, userLoading } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
-      if (!isLoggedIn && !userLoading) router.push("/");
+      if (!isLoggedIn && !userLoading) router.push("/auth/login");
     }, [userLoading, isLoggedIn]);
 
     return <Component {...arguments} />;

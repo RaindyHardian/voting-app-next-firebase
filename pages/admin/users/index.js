@@ -97,7 +97,7 @@ function Users(props) {
           Users page contains all of the user data that you can manage, view, or
           edit
         </div>
-        
+
         {/* CARD */}
         <div className="bg-white px-3 py-2 md:py-6 md:px-10 rounded overflow-x-auto mb-4 md:shadow-lg ">
           <div className="font-bold text-gray-800 text-lg ">User Data</div>
@@ -105,13 +105,13 @@ function Users(props) {
             These data below is the entire user data stored in the database
           </div>
           <Link href="/auth/register">
-          <button
-            className="bg-blue-600 hover:bg-blue-700 text-white tracking-wide py-2 px-6 rounded mb-2"
-            type="button"
-          >
-            Add User
-          </button>
-        </Link>
+            <button
+              className="bg-blue-600 hover:bg-blue-700 text-white tracking-wide py-2 px-6 rounded mb-2"
+              type="button"
+            >
+              Add User
+            </button>
+          </Link>
           {isLoading ? (
             <div>
               <Skeleton height="20px" my="10px" />

@@ -5,12 +5,7 @@ import Layout from "../components/Layout";
 import useAuth, { ProtectRoute } from "../context/auth";
 
 function Home() {
-  const {
-    user,
-    isAdmin,
-    isLoggedIn,
-    userLoading
-  } = useAuth();
+  const { user, isAdmin, isLoggedIn, userLoading } = useAuth();
   return (
     <Layout>
       <Head>
@@ -23,13 +18,20 @@ function Home() {
           src="/svg/undraw_online_connection_6778.svg"
         />
         <div className="text-xl font-bold text-center md:text-3xl">
+          {!userLoading
+            ? user
+              ? `Hi, ${user.displayName}. `
+              : null
+            : null}
           Welcome to Resident's Chief Voting
         </div>
         <div className="text-md text-center">
           Click the login button below to start voting
         </div>
         <div className="mt-2">
-          {userLoading ? 'Please Wait...' : !isLoggedIn ? (
+          {userLoading ? (
+            "Please Wait..."
+          ) : !isLoggedIn ? (
             <>
               <Link href="/auth/login">
                 <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
@@ -70,4 +72,4 @@ function Home() {
   );
 }
 
-export default ProtectRoute(Home)
+export default ProtectRoute(Home);

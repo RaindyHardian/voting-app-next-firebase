@@ -2,56 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer components {
-  .drawer{
+  .drawer {
     background-color: #1e1e2d !important;
   }
   .dash__left {
     background-color: #1e1e2d;
   }
-  .dash__linkContainer{
+  .dash__linkContainer {
     @apply hidden;
   }
-  .dash__right{
+  .dash__right {
     @apply bg-white px-3 py-5 min-h-screen pb-3;
   }
   .dash__leftH {
     @apply px-6 py-3 flex flex-row justify-between text-white font-bold;
-    background-color:#1b1b28;
+    background-color: #1b1b28;
   }
-  .dash__link{
+  .dash__link {
     @apply flex flex-row items-center py-2 text-gray-300 cursor-pointer;
   }
-  .dash__linkActive{
+  .dash__linkActive {
     @apply text-white font-bold;
-    background-color : #171722;
+    background-color: #171722;
   }
-  .dash__link:hover{
-    color : white;
-    background-color : #1b1b28;
+  .dash__link:hover {
+    color: white;
+    background-color: #1b1b28;
   }
   @screen md {
-    .dash__open{
+    .dash__open {
       @apply hidden;
     }
-    .dash__linkContainer{
+    .dash__linkContainer {
       @apply flex flex-col;
     }
-    .dash__link{
+    .dash__link {
       @apply py-3 pl-6 pr-12 text-gray-300 cursor-pointer;
     }
-    .dash__linkActive{
+    .dash__linkActive {
       @apply text-white font-bold;
-      background-color : #171722;
+      background-color: #171722;
     }
-    .dash__left{
+    .dash__left {
       @apply fixed top-0 left-0 h-full;
     }
     .dash__leftH {
       @apply py-4 pl-6 pr-20 text-white font-bold cursor-pointer mb-6;
     }
-    .dash__right{
+    .dash__right {
       @apply bg-gray-200 pl-10 pr-10 py-5;
       margin-left: 11em;
     }

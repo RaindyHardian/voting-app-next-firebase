@@ -1,4 +1,3 @@
-import firebaseAppp from "../../../utils/firebaseConfig";
 import { useState, useEffect, useMemo } from "react";
 import AdminLayout from "../../../components/AdminLayout";
 import { ProtectRoute } from "../../../context/auth";
@@ -7,6 +6,7 @@ import Link from "next/link";
 import { Skeleton } from "@chakra-ui/core";
 
 import { useRouter } from "next/router";
+import firebaseApp from "../../../utils/firebaseConfig";
 
 function Admin(props) {
   const router = useRouter();
@@ -14,35 +14,36 @@ function Admin(props) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetch = () => {
-      firebaseAppp
-        .firestore()
-        .collection("elections")
-        // .get()
-        .onSnapshot(elections => {
-          setElections(
-            elections.docs.map(item => {
-              return {
-                id: item.id,
-                election: item.data()
-              };
-            })
-          );
-        });
-      setIsLoading(false);
+    const unsubscribe = firebaseApp
+      .firestore()
+      .collection("elections")
+      // .get()
+      .onSnapshot(elections => {
+        setElections(
+          elections.docs.map(item => {
+            return {
+              id: item.id,
+              election: item.data()
+            };
+          })
+        );
+        setIsLoading(false);
+      });
+
+    return () => {
+      unsubscribe();
     };
-    fetch();
   }, []);
 
   const setActiveElection = e => {
     // console.log(e.target.attributes.e_id.value)
     let a;
-    if(e.target.attributes.activate.value==1){
-      a = 1 
+    if (e.target.attributes.activate.value == 1) {
+      a = 1;
     } else {
-      a = 0
+      a = 0;
     }
-    firebaseAppp
+    firebaseApp
       .firestore()
       .collection("elections")
       .doc(e.target.attributes.e_id.value)
@@ -55,6 +56,20 @@ function Admin(props) {
       .catch(err => {
         console.log(err);
       });
+  };
+  const delElection = e => {
+    e.preventDefault();
+    firebaseApp
+      .firestore()
+      .collection("elections")
+      .doc(e.target.attributes.e_id.value)
+      .delete()
+      .then(()=>{
+        console.log("SUCCESS");
+      })
+      .catch(err=>{
+        console.log(err)
+      })
   };
 
   const data = useMemo(() => {
@@ -71,16 +86,16 @@ function Admin(props) {
             >
               View
             </button>
-            <div className="ml-3 inline-block">
+            <div className="ml-3 mr-3 inline-block">
               {election.active == 1 ? (
                 <button
-                  className="bg-red-600 hover:bg-red-800 text-white tracking-wide py-2 px-6 rounded inline-block"
+                  className="bg-yellow-600 hover:bg-yellow-800 text-white tracking-wide py-2 px-6 rounded inline-block"
                   type="button"
                   e_id={id}
                   activate="0"
                   onClick={setActiveElection}
                 >
-                  Unactivate
+                  Inactivate
                 </button>
               ) : (
                 <button
@@ -94,6 +109,13 @@ function Admin(props) {
                 </button>
               )}
             </div>
+            <button
+              className="bg-red-600 hover:bg-red-700 text-white tracking-wide py-2 px-6 rounded inline-block"
+              e_id={id}
+              onClick={delElection}
+            >
+              Delete
+            </button>
           </div>
         )
       };
@@ -148,12 +170,14 @@ function Admin(props) {
           <div className="text-gray-700 text-lg mb-3">
             These data below is the entire election data stored in the database
           </div>
-          <button
-            className="bg-blue-600 hover:bg-blue-700 text-white tracking-wide py-2 px-6 rounded mb-2"
-            type="button"
-          >
-            Add Election
-          </button>
+          <Link href="/admin/election/create">
+            <button
+              className="bg-blue-600 hover:bg-blue-700 text-white tracking-wide py-2 px-6 rounded mb-2"
+              type="button"
+            >
+              Add Election
+            </button>
+          </Link>
           {isLoading ? (
             <div>
               <Skeleton height="20px" my="10px" />

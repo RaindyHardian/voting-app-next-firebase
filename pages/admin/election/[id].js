@@ -11,6 +11,7 @@ import CandidatesTable from "../../../components/admin/election/CandidatesTable"
 import VotersTable from "../../../components/admin/election/VotersTable";
 import { Skeleton } from "@chakra-ui/core";
 import EditElection from "../../../components/admin/election/EditElection";
+import { format } from "date-fns";
 // const fetcher = async (...args) => {
 //   const res = await fetch(...args);
 //   return res.json();
@@ -39,15 +40,10 @@ function Election() {
         .firestore()
         .collection(`elections`)
         .doc(id)
-        .get()
-        .then(item => {
+        .onSnapshot(item => {
           setElection(item.data());
           setELoading(false);
         })
-        .catch(err => {
-          console.log(err);
-          setELoading(false);
-        });
       // candidates
       firebaseApp
         .firestore()
@@ -133,7 +129,7 @@ function Election() {
               </Link>
             </div>
             {/* EDIT BUTTON */}
-            {!eLoading ? <EditElection election={election} /> : null}
+            {!eLoading ? <EditElection e_id={id} election={election} /> : null}
           </div>
           {eLoading ? (
             <div>
@@ -148,11 +144,11 @@ function Election() {
               <div className="text-gray-800">{election.description}</div>
               <div className="text-gray-800">
                 <span className="font-bold">Start </span>
-                {election.start.toDate().toString()}
+                {format(election.start.toDate(), "eeee, dd MMMM yyyy HH:mm:ss")}
               </div>
               <div className="text-gray-800">
                 <span className="font-bold">End </span>
-                {election.end.toDate().toString()}
+                {format(election.end.toDate(), "eeee, dd MMMM yyyy HH:mm:ss")}
               </div>
               <div className="mt-1">
                 <span className="font-bold text-gray-800 mr-2">Status</span>

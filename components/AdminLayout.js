@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-// import firebaseApp from "../utils/firebaseConfig";
+import firebaseApp from "../utils/firebaseConfig";
 import { useRouter } from "next/router";
 import {
   Drawer,
@@ -98,7 +98,10 @@ function AdminLayout({ children }) {
             </div>
           </Link>
 
-          <div className="dash__link mt-4">
+          <div
+            className="dash__link mt-4"
+            onClick={() => firebaseApp.auth().signOut()}
+          >
             <div className="w-4 mr-3">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -146,7 +149,12 @@ function AdminLayout({ children }) {
             >
               Users
             </div>
-            <div className="dash__link">Logout</div>
+            <div
+              className="dash__link"
+              onClick={() => firebaseApp.auth().signOut()}
+            >
+              Logout
+            </div>
           </DrawerBody>
         </DrawerContent>
       </Drawer>
