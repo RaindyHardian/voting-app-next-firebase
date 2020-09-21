@@ -63,8 +63,8 @@ function Election() {
       firebaseApp
         .firestore()
         .collection(`elections/${id}/voter`)
-        .get()
-        .then(async items => {
+        // .get()
+        .onSnapshot(async items => {
           setVoters(
             await Promise.all(
               items.docs.map(async item => {
@@ -79,10 +79,6 @@ function Election() {
           );
           setVLoading(false);
         })
-        .catch(err => {
-          console.log(err);
-          setVLoading(false);
-        });
     }
   }, [id]);
 

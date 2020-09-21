@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import firebase from "firebase";
 import Layout from "../../components/Layout";
 import { Spinner } from "@chakra-ui/core";
+import Link from "next/link";
 
 const vote = () => {
   const [elections, setElections] = useState([]);
@@ -83,9 +84,11 @@ const vote = () => {
                           );
                         } else {
                           return (
-                            <button className="bg-orange-500 hover:bg-orange-600 text-white tracking-wide py-2 px-6 rounded inline-block">
-                              Vote Now
-                            </button>
+                            <Link href={`/vote/${id}`}>
+                              <button className="bg-orange-500 hover:bg-orange-600 text-white tracking-wide py-2 px-6 rounded inline-block">
+                                Vote Now
+                              </button>
+                            </Link>
                           );
                         }
                       })()}

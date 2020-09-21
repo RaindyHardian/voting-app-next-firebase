@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = firebaseApp.auth().onAuthStateChanged(authUser => {
       if (authUser) {
-        setUser(authUser);
+        // setUser(authUser);
         firebaseApp
           .firestore()
           .collection("users")
@@ -32,6 +32,10 @@ export const AuthProvider = ({ children }) => {
             } else {
               setIsAdmin(false);
             }
+            setUser({
+              id: doc.id,
+              data: doc.data()
+            });
             setIsLoggedIn(true);
             setUserLoading(false);
           });
@@ -112,7 +116,10 @@ export function ProtectRoute(Component) {
     const router = useRouter();
 
     useEffect(() => {
-      if ((!isLoggedIn && !userLoading) || !isAdmin) {
+      if (!isLoggedIn && !userLoading) {
+        router.push("/");
+      }
+      if (isLoggedIn && !isAdmin) {
         router.push("/");
       }
       // if(!isAdmin){
@@ -120,7 +127,7 @@ export function ProtectRoute(Component) {
       // }
     }, [userLoading, isLoggedIn, isAdmin]);
 
-    return <Component {...arguments} />;
+    return userLoading?null:<Component {...arguments} />;
   };
 }
 
@@ -133,6 +140,6 @@ export function ProtectUserRoute(Component) {
       if (!isLoggedIn && !userLoading) router.push("/auth/login");
     }, [userLoading, isLoggedIn]);
 
-    return <Component {...arguments} />;
+    return userLoading?null:<Component {...arguments} />;
   };
 }
