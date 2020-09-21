@@ -18,14 +18,14 @@ function Users(props) {
         address: data.address,
         action: (
           <div>
-            <Link href={`/admin/election/${id}`}>
+            <Link href={`/admin/users/edit/${id}`}>
               <button className="inline-block bg-teal-500 hover:bg-teal-700 text-white tracking-wide py-2 px-6 rounded mr-2">
                 Edit
               </button>
             </Link>
-            <button className="inline-block bg-red-600 hover:bg-red-700 text-white tracking-wide py-2 px-6 rounded">
+            {/* <button className="inline-block bg-red-600 hover:bg-red-700 text-white tracking-wide py-2 px-6 rounded">
               Delete
-            </button>
+            </button> */}
           </div>
         )
       };

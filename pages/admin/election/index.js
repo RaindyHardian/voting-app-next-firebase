@@ -95,7 +95,7 @@ function Admin(props) {
                   activate="0"
                   onClick={setActiveElection}
                 >
-                  Inactivate
+                  Deactivate
                 </button>
               ) : (
                 <button

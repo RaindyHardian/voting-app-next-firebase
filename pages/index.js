@@ -20,7 +20,7 @@ function Home() {
         <div className="text-xl font-bold text-center md:text-3xl">
           {!userLoading
             ? user
-              ? `Hi, ${user.displayName}. `
+              ? `Hi, ${user.data.fullName}. `
               : null
             : null}
           Welcome to Resident's Chief Voting
