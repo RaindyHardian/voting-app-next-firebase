@@ -126,31 +126,44 @@ function AdminLayout({ children }) {
         <DrawerContent className="drawer">
           <DrawerCloseButton className="text-white border-white" />
           <DrawerHeader>
-            <div className="text-white">ELECTION</div>
+            <div className="text-white pl-3">ELECTION</div>
           </DrawerHeader>
           <DrawerBody>
+            <Link href="/admin">
+              <div
+                className={
+                  router.pathname === "/admin"
+                    ? "dash__link dash__linkActive pl-3 rounded"
+                    : "dash__link pl-3"
+                }
+              >
+                Dashboard
+              </div>
+            </Link>
             <Link href="/admin/election">
               <div
                 className={
                   router.pathname.includes("/election")
-                    ? "dash__link dash__linkActive"
-                    : "dash__link"
+                    ? "dash__link dash__linkActive pl-3"
+                    : "dash__link pl-3"
                 }
               >
                 Elections
               </div>
             </Link>
+            <Link href="/admin/users">
+              <div
+                className={
+                  router.pathname.includes("/user")
+                    ? "dash__link dash__linkActive pl-3"
+                    : "dash__link pl-3"
+                }
+              >
+                Users
+              </div>
+            </Link>
             <div
-              className={
-                router.pathname.includes("/user")
-                  ? "dash__link dash__linkActive"
-                  : "dash__link"
-              }
-            >
-              Users
-            </div>
-            <div
-              className="dash__link"
+              className="dash__link pl-3"
               onClick={() => firebaseApp.auth().signOut()}
             >
               Logout
