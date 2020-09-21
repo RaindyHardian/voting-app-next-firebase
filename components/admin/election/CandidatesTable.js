@@ -8,8 +8,12 @@ const CandidatesTable = props => {
         id: id,
         name: data.name,
         address: data.address,
-        count: data.vote_count,
-        action: (
+        count: props.finished?data.vote_count:'Unfinished',
+        action: props.finished ? (
+          <button className="bg-red-300 text-white tracking-wide py-2 px-6 rounded cursor-not-allowed">
+            Delete
+          </button>
+        ) : (
           <button
             className="bg-red-600 hover:bg-red-700 text-white tracking-wide py-2 px-6 rounded"
             user_id={id}

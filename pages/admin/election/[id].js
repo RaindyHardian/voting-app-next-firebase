@@ -9,7 +9,7 @@ import AddCandidates from "../../../components/AddCandidates";
 import AdminLayout from "../../../components/AdminLayout";
 import CandidatesTable from "../../../components/admin/election/CandidatesTable";
 import VotersTable from "../../../components/admin/election/VotersTable";
-import { Skeleton } from "@chakra-ui/core";
+import { Skeleton, useToast } from "@chakra-ui/core";
 import EditElection from "../../../components/admin/election/EditElection";
 import { format } from "date-fns";
 // const fetcher = async (...args) => {
@@ -18,6 +18,7 @@ import { format } from "date-fns";
 // };
 function Election() {
   const router = useRouter();
+  const toast = useToast();
   const { id } = router.query;
   const [election, setElection] = useState({});
   const [candidates, setCandidates] = useState([]);
@@ -43,7 +44,7 @@ function Election() {
         .onSnapshot(item => {
           setElection(item.data());
           setELoading(false);
-        })
+        });
       // candidates
       firebaseApp
         .firestore()
@@ -78,7 +79,7 @@ function Election() {
             )
           );
           setVLoading(false);
-        })
+        });
     }
   }, [id]);
 
@@ -94,6 +95,28 @@ function Election() {
       })
       .catch(function(error) {
         console.error("Error removing document: ", error);
+      });
+  };
+
+  const finishElection = e => {
+    firebaseApp
+      .firestore()
+      .collection("elections")
+      .doc(id)
+      .update({
+        finished: true
+      })
+      .then(() => {
+        toast({
+          title: "Action succeded.",
+          description: "The election is finished",
+          status: "success",
+          duration: 8000,
+          isClosable: true
+        });
+      })
+      .catch(err => {
+        console.log(err);
       });
   };
 
@@ -146,7 +169,7 @@ function Election() {
                 <span className="font-bold">End </span>
                 {format(election.end.toDate(), "eeee, dd MMMM yyyy HH:mm:ss")}
               </div>
-              <div className="mt-1">
+              <div className="mt-2">
                 <span className="font-bold text-gray-800 mr-2">Status</span>
                 {election.active == 1 ? (
                   <div className="inline-block text-white bg-green-600 rounded py-1 px-3">
@@ -158,6 +181,21 @@ function Election() {
                   </div>
                 )}
               </div>
+              <div className="mt-2">
+                <span className="font-bold text-gray-800 mr-2">Action</span>
+                {election.finished ? (
+                  <div className="inline-block text-white bg-green-600 rounded py-1 px-3">
+                    Election finished
+                  </div>
+                ) : (
+                  <button
+                    className="inline-block bg-indigo-600 hover:bg-indigo-700 rounded text-white tracking-wide py-2 px-6 "
+                    onClick={finishElection}
+                  >
+                    Finish this election
+                  </button>
+                )}
+              </div>
             </div>
           )}
         </div>
@@ -165,7 +203,7 @@ function Election() {
           <div className="font-bold text-gray-800 text-lg mb-4">
             Candidates Data
           </div>
-          {cLoading ? (
+          {cLoading && eLoading ? (
             <div>
               <Skeleton height="10px" my="10px" />
               <Skeleton height="10px" my="10px" />
@@ -174,9 +212,15 @@ function Election() {
           ) : (
             <div>
               <div className="mb-2">
-                <AddCandidates election_id={id} candidates={candidates} />
+                {election.finished ? null : (
+                  <AddCandidates election_id={id} candidates={candidates} />
+                )}
               </div>
-              <CandidatesTable del={del} candidates={candidates} />
+              <CandidatesTable
+                finished={election.finished}
+                del={del}
+                candidates={candidates}
+              />
             </div>
           )}
         </div>
