@@ -191,7 +191,7 @@ const EditElection = props => {
                     className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                     id="grid-state"
                     value={active}
-                    onChange={e => setActive(e.target.value)}
+                    onChange={e => setActive(parseInt(e.target.value))}
                   >
                     <option value="1">Active</option>
                     <option value="0">Inactive</option>

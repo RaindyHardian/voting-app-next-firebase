@@ -123,7 +123,7 @@ function Election() {
   return (
     <AdminLayout>
       <Head>
-        <title>Election Data</title>
+        <title>Admin Dashboard</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div>

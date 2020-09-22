@@ -4,6 +4,7 @@ import AdminLayout from "../../components/AdminLayout";
 import { ProtectRoute } from "../../context/auth";
 import { useTable, useSortBy } from "react-table";
 import Link from "next/link";
+import Head from "next/head";
 
 function Admin(props) {
   const [elections, setElections] = useState([]);
@@ -83,6 +84,10 @@ function Admin(props) {
   }, []);
   return (
     <AdminLayout>
+      <Head>
+        <title>Admin Dashboard</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <div className="">
         <div className="px-3 md:px-0 text-2xl text-gray-800 md:text-3xl font-bold mb-3">
           Dashboard

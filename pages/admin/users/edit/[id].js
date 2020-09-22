@@ -63,7 +63,7 @@ const userEdit = () => {
     <AdminLayout>
       <div>
         <Head>
-          <title>Create new account</title>
+          <title>Edit account</title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <div className="px-3 md:px-0 text-2xl text-gray-800 md:text-3xl font-bold md:mb-5 ">

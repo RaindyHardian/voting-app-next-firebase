@@ -3,13 +3,15 @@ import AdminLayout from "../../../components/AdminLayout";
 import { ProtectRoute } from "../../../context/auth";
 import { useTable, useSortBy } from "react-table";
 import Link from "next/link";
-import { Skeleton } from "@chakra-ui/core";
+import { Skeleton, useToast } from "@chakra-ui/core";
 
 import { useRouter } from "next/router";
 import firebaseApp from "../../../utils/firebaseConfig";
+import Head from "next/head";
 
 function Admin(props) {
   const router = useRouter();
+  const toast = useToast();
   const [elections, setElections] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -65,7 +67,13 @@ function Admin(props) {
       .doc(e.target.attributes.e_id.value)
       .delete()
       .then(()=>{
-        console.log("SUCCESS");
+        toast({
+          title: "Action succeded.",
+          description: "Election Deleted",
+          status: "success",
+          duration: 8000,
+          isClosable: true
+        });
       })
       .catch(err=>{
         console.log(err)
@@ -156,6 +164,10 @@ function Admin(props) {
 
   return (
     <AdminLayout>
+      <Head>
+        <title>Admin Dashboard</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <div className="">
         <div className="px-3 md:px-0 text-2xl text-gray-800 md:text-3xl font-bold ">
           Election

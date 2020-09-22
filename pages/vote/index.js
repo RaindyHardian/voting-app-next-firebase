@@ -6,6 +6,7 @@ import firebase from "firebase";
 import Layout from "../../components/Layout";
 import { Spinner } from "@chakra-ui/core";
 import Link from "next/link";
+import Head from "next/head";
 
 const vote = () => {
   const [elections, setElections] = useState([]);
@@ -17,7 +18,7 @@ const vote = () => {
       .firestore()
       .collection("elections")
       .where("active", "==", 1)
-      .where("end", ">", date)
+      .where("end", ">=", date)
       .get()
       .then(items => {
         setElections(
@@ -31,19 +32,13 @@ const vote = () => {
         setLoading(false);
       });
   }, []);
-  const compareStart = e => {
-    let s = new Date(e.target.attributes.tgl.value);
-    let now = firebase.firestore.Timestamp.now().toDate();
-    console.log(s);
-    console.log(now);
-    if (now <= s) {
-      console.log("BELOM WAKTUNYA");
-    } else {
-      console.log("Sudah waktunya");
-    }
-  };
+
   return (
     <Layout>
+      <Head>
+        <title>Choose Election</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <div className="px-5">
         <div className="flex flex-row items-center justify-center text-2xl mt-3 mb-3 md:mb-6">
           <div className="mr-3">Choose Election</div>
@@ -53,33 +48,46 @@ const vote = () => {
           {/* CARD */}
           {!loading
             ? elections.map(({ id, data }) => (
-                <div key={id} className="rounded overflow-hidden shadow-lg">
-                  <img
-                    className="object-cover w-full "
-                    src="/svg/Repeating-Triangles(1).svg"
-                  />
+                <div key={id} className="flex flex-col justify-between rounded overflow-hidden shadow-lg">
+                  <div>
+                    <img
+                      className="object-cover w-full "
+                      src="/svg/Repeating-Triangles(1).svg"
+                    />
+                    <div className="px-6 py-4">
+                      <div className="font-bold text-xl mb-1">{data.title}</div>
+                      <div className="font-bold text-gray-800">Start </div>
+                      <div className="text-gray-700 text-base mb-1">
+                        {format(
+                          data.start.toDate(),
+                          "eeee, dd MMMM yyyy HH:mm:ss"
+                        )}
+                      </div>
+                      <div className="font-bold text-gray-800">Until </div>
+                      <div className="text-gray-700 text-base">
+                        {format(
+                          data.end.toDate(),
+                          "eeee, dd MMMM yyyy HH:mm:ss"
+                        )}
+                      </div>
+                    </div>
+                  </div>
                   <div className="px-6 py-4">
-                    <div className="font-bold text-xl mb-1">{data.title}</div>
-                    <div className="font-bold text-gray-800">Start </div>
-                    <div className="text-gray-700 text-base mb-1">
-                      {format(
-                        data.start.toDate(),
-                        "eeee, dd MMMM yyyy HH:mm:ss"
-                      )}
-                    </div>
-                    <div className="font-bold text-gray-800">Until </div>
-                    <div className="text-gray-700 text-base">
-                      {format(data.end.toDate(), "eeee, dd MMMM yyyy HH:mm:ss")}
-                    </div>
-                    <div className="mt-6">
-                      {(() => {
-                        if (
-                          firebase.firestore.Timestamp.now().toDate() <=
-                          new Date(data.start.toDate())
-                        ) {
+                    {(() => {
+                      if (
+                        firebase.firestore.Timestamp.now().toDate() <=
+                        new Date(data.start.toDate())
+                      ) {
+                        return (
+                          <button className="bg-orange-300 text-white tracking-wide py-2 px-6 rounded inline-block cursor-not-allowed">
+                            Vote Later
+                          </button>
+                        );
+                      } else {
+                        if (data.finished) {
                           return (
                             <button className="bg-orange-300 text-white tracking-wide py-2 px-6 rounded inline-block cursor-not-allowed">
-                              Vote Later
+                              Election is finished
                             </button>
                           );
                         } else {
@@ -91,8 +99,8 @@ const vote = () => {
                             </Link>
                           );
                         }
-                      })()}
-                    </div>
+                      }
+                    })()}
                   </div>
                 </div>
               ))

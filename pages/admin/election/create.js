@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Spinner } from "@chakra-ui/core";
+import { Spinner, useToast } from "@chakra-ui/core";
 import firebaseApp from "../../../utils/firebaseConfig";
 import firebase from "firebase";
 import Head from "next/head";
@@ -8,8 +8,9 @@ import { useRouter } from "next/router";
 import AdminLayout from "../../../components/AdminLayout";
 import { ProtectRoute } from "../../../context/auth";
 
-const create = (props) => {
+const create = props => {
   const router = useRouter();
+  const toast = useToast();
   const [key, setKey] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -18,7 +19,7 @@ const create = (props) => {
   const [startTime, setStartTime] = useState("");
   const [endDate, setEndDate] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [active, setActive] = useState("0");
+  const [active, setActive] = useState(0);
 
   const [loading, setLoading] = useState(false);
   const [alertMsg, setAlertMsg] = useState("");
@@ -56,6 +57,13 @@ const create = (props) => {
         .then(() => {
           setLoading(false);
           setAlertMsg("");
+          toast({
+            title: "Action succeded.",
+            description: "Election Created",
+            status: "success",
+            duration: 8000,
+            isClosable: true
+          });
           return router.push("/admin/election");
         })
         .catch(err => {
@@ -69,7 +77,7 @@ const create = (props) => {
   return (
     <AdminLayout>
       <Head>
-        <title>Create Election</title>
+        <title>Admin Dashboard</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="overflow-x-auto mb-6 ">
@@ -218,7 +226,7 @@ const create = (props) => {
                   className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   id="grid-state"
                   value={active}
-                  onChange={e => setActive(e.target.value)}
+                  onChange={e => setActive(parseInt(e.target.value))}
                 >
                   <option value="1">Active</option>
                   <option value="0">Inactive</option>

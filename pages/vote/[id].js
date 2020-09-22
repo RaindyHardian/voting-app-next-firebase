@@ -7,6 +7,7 @@ import Layout from "../../components/Layout";
 import { Spinner } from "@chakra-ui/core";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 const vote = () => {
   const { user, isLoggedIn } = useAuth();
@@ -106,6 +107,10 @@ const vote = () => {
   };
   return (
     <Layout>
+      <Head>
+        <title>Choose Candidates</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <div className="px-5">
         <div className="flex flex-row items-center justify-center text-2xl mt-3 mb-3 md:mb-6">
           <div className="mr-3">Choose Candidates</div>
@@ -113,7 +118,7 @@ const vote = () => {
         </div>
         <div className="grid grid-cols-1 gap-y-5 md:grid-cols-3 md:gap-4 lg:gap-x-4 lg:gap-y-6 lg:grid-cols-4">
           {/* CARD */}
-          {!cLoading && !vLoading
+          {!cLoading && !vLoading && !eLoading
             ? candidates.map(({ id, data }) => (
                 <div
                   key={id}
@@ -136,19 +141,19 @@ const vote = () => {
                     </div>
                   </div>
                   <div className="flex flex-row justify-center mt-10">
-                    {!voted ? (
+                    {voted || elections.data.finished ? (
+                      <button className="bg-indigo-300 hover:bg-indigo-300 text-white tracking-wide py-2 px-10 rounded inline-block cursor-not-allowed">
+                        {elections.data.finished
+                          ? "Election is Finished"
+                          : "Your already vote"}
+                      </button>
+                    ) : (
                       <button
                         className="bg-indigo-500 hover:bg-indigo-600 text-white tracking-wide py-2 px-10 rounded inline-block"
                         c_id={id}
                         onClick={voteCandidate}
                       >
                         Choose
-                      </button>
-                    ) : (
-                      <button
-                        className="bg-indigo-300 hover:bg-indigo-300 text-white tracking-wide py-2 px-10 rounded inline-block cursor-not-allowed"
-                      >
-                        You already vote
                       </button>
                     )}
                   </div>
