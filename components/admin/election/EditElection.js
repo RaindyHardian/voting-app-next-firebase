@@ -10,11 +10,13 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
-  Spinner
+  Spinner,
+  useToast
 } from "@chakra-ui/core";
 import { format } from "date-fns";
 
 const EditElection = props => {
+  const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [title, setTitle] = useState(props.election.title);
   const [description, setDescription] = useState(props.election.description);
@@ -56,9 +58,22 @@ const EditElection = props => {
       })
       .then(() => {
         setLoading(false);
+        toast({
+          title: "Update success",
+          description: "Election updated",
+          status: "success",
+          duration: 8000,
+          isClosable: true
+        });
       })
       .catch(err => {
-        console.log(err);
+        toast({
+          title: "Error saving election",
+          description: "Please try again",
+          status: "error",
+          duration: 8000,
+          isClosable: true
+        });
         setLoading(false);
       });
   };

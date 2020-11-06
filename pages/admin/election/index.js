@@ -53,10 +53,22 @@ function Admin(props) {
         active: a
       })
       .then(() => {
-        console.log("SUCCESS");
+        toast({
+          title: "Update succeded.",
+          description: "Election updated",
+          status: "success",
+          duration: 8000,
+          isClosable: true
+        });
       })
       .catch(err => {
-        console.log(err);
+        toast({
+          title: "Update failed.",
+          description: "Please try again",
+          status: "error",
+          duration: 8000,
+          isClosable: true
+        });
       });
   };
   const delElection = e => {
@@ -70,13 +82,19 @@ function Admin(props) {
         toast({
           title: "Action succeded.",
           description: "Election Deleted",
-          status: "success",
+          status: "error",
           duration: 8000,
           isClosable: true
         });
       })
       .catch(err=>{
-        console.log(err)
+        toast({
+          title: "Action failed.",
+          description: "Please try again",
+          status: "error",
+          duration: 8000,
+          isClosable: true
+        });
       })
   };
 

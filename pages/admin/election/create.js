@@ -67,7 +67,13 @@ const create = props => {
           return router.push("/admin/election");
         })
         .catch(err => {
-          console.log(err);
+          toast({
+            title: "Action failed.",
+            description: "Please try again",
+            status: "failed",
+            duration: 8000,
+            isClosable: true
+          });
           setLoading(false);
         });
     } else {

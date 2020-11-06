@@ -5,13 +5,16 @@ import { useRouter } from "next/router";
 import useSWR from "swr";
 import { ProtectRoute } from "../../../context/auth";
 import firebaseApp from "../../../utils/firebaseConfig";
-import AddCandidates from "../../../components/AddCandidates";
+import { Skeleton, useToast } from "@chakra-ui/core";
+import { format } from "date-fns";
+
+
 import AdminLayout from "../../../components/AdminLayout";
 import CandidatesTable from "../../../components/admin/election/CandidatesTable";
 import VotersTable from "../../../components/admin/election/VotersTable";
-import { Skeleton, useToast } from "@chakra-ui/core";
 import EditElection from "../../../components/admin/election/EditElection";
-import { format } from "date-fns";
+import AddCandidates from "../../../components/AddCandidates";
+
 // const fetcher = async (...args) => {
 //   const res = await fetch(...args);
 //   return res.json();
@@ -91,10 +94,22 @@ function Election() {
       .doc(e.target.attributes.user_id.value)
       .delete()
       .then(function() {
-        console.log("Document successfully deleted!");
+        toast({
+          title: "Delete succeeded.",
+          description: "",
+          status: "success",
+          duration: 8000,
+          isClosable: true
+        });
       })
       .catch(function(error) {
-        console.error("Error removing document: ", error);
+        toast({
+          title: "Error removing candidate",
+          description: "Please try again",
+          status: "error",
+          duration: 8000,
+          isClosable: true
+        });
       });
   };
 
@@ -116,7 +131,13 @@ function Election() {
         });
       })
       .catch(err => {
-        console.log(err);
+        toast({
+          title: "Action failed.",
+          description: "Please try again",
+          status: "error",
+          duration: 8000,
+          isClosable: true
+        });
       });
   };
 

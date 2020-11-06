@@ -8,16 +8,19 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  useDisclosure
+  useDisclosure,
+  useToast
 } from "@chakra-ui/core";
 import { useTable, useSortBy } from "react-table";
 
 export default function AddCandidates(props) {
+  const toast = useToast();
   const [candidateData, setCandidateData] = useState([]);
   const [cLoading, setCLoading] = useState(true);
   const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [addLoading, setAddLoading] = useState(false);
+  const [error, setError] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
@@ -59,9 +62,10 @@ export default function AddCandidates(props) {
           })
         );
         setLoading(false);
+        setError(false);
       })
       .catch(err => {
-        console.log(err);
+        setError(true);
       });
   }, [candidateData]);
 
@@ -81,6 +85,23 @@ export default function AddCandidates(props) {
       })
       .then(() => {
         setAddLoading(false);
+        toast({
+          title: "Action success",
+          description: "Candidate added",
+          status: "success",
+          duration: 8000,
+          isClosable: true
+        });
+      })
+      .catch(err => {
+        setAddLoading(false);
+        toast({
+          title: "Error adding candidate",
+          description: "Please try again",
+          status: "error",
+          duration: 8000,
+          isClosable: true
+        });
       });
   };
   const del = e => {
@@ -90,10 +111,22 @@ export default function AddCandidates(props) {
       .doc(e.target.attributes.user_id.value)
       .delete()
       .then(function() {
-        console.log("Document successfully deleted!");
+        toast({
+          title: "Action success",
+          description: "Candidate removed",
+          status: "success",
+          duration: 8000,
+          isClosable: true
+        });
       })
       .catch(function(error) {
-        console.error("Error removing document: ", error);
+        toast({
+          title: "Error deleting candidate",
+          description: "Please try again",
+          status: "error",
+          duration: 8000,
+          isClosable: true
+        });
       });
   };
   const data = useMemo(() => {
@@ -168,56 +201,62 @@ export default function AddCandidates(props) {
           <ModalHeader>Add Candidates</ModalHeader>
           <ModalCloseButton />
           <ModalBody className="overflow-x-auto">
-            <table
-              {...getTableProps()}
-              className="border-collapse  overflow-x-auto min-w-full"
-            >
-              <thead>
-                {headerGroups.map(headerGroup => (
-                  <tr {...headerGroup.getHeaderGroupProps()}>
-                    {headerGroup.headers.map(column => (
-                      <th
-                        {...column.getHeaderProps(
-                          column.getSortByToggleProps()
-                        )}
-                        className="px-4 py-2 border-b-2 border-gray-400 text-sm text-left leading-4 text-blue-500 tracking-wider"
-                      >
-                        <div>
-                          {column.render("Header")}
-                          <span>
-                            {column.isSorted
-                              ? column.isSortedDesc
-                                ? " 🔽"
-                                : " 🔼"
-                              : ""}
-                          </span>
-                        </div>
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
-
-              <tbody {...getTableBodyProps()}>
-                {rows.map(row => {
-                  prepareRow(row);
-                  return (
-                    <tr {...row.getRowProps()} className="hover:bg-gray-100">
-                      {row.cells.map(cell => {
-                        return (
-                          <td
-                            {...cell.getCellProps()}
-                            className="px-4 py-2 border-b border-gray-300 whitespace-no-wrap"
-                          >
-                            {cell.render("Cell")}
-                          </td>
-                        );
-                      })}
+            {loading ? (
+              <div>Please wait</div>
+            ) : error ? (
+              <div>There's an error, please refresh the page</div>
+            ) : (
+              <table
+                {...getTableProps()}
+                className="border-collapse  overflow-x-auto min-w-full"
+              >
+                <thead>
+                  {headerGroups.map(headerGroup => (
+                    <tr {...headerGroup.getHeaderGroupProps()}>
+                      {headerGroup.headers.map(column => (
+                        <th
+                          {...column.getHeaderProps(
+                            column.getSortByToggleProps()
+                          )}
+                          className="px-4 py-2 border-b-2 border-gray-400 text-sm text-left leading-4 text-blue-500 tracking-wider"
+                        >
+                          <div>
+                            {column.render("Header")}
+                            <span>
+                              {column.isSorted
+                                ? column.isSortedDesc
+                                  ? " 🔽"
+                                  : " 🔼"
+                                : ""}
+                            </span>
+                          </div>
+                        </th>
+                      ))}
                     </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                  ))}
+                </thead>
+
+                <tbody {...getTableBodyProps()}>
+                  {rows.map(row => {
+                    prepareRow(row);
+                    return (
+                      <tr {...row.getRowProps()} className="hover:bg-gray-100">
+                        {row.cells.map(cell => {
+                          return (
+                            <td
+                              {...cell.getCellProps()}
+                              className="px-4 py-2 border-b border-gray-300 whitespace-no-wrap"
+                            >
+                              {cell.render("Cell")}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            )}
             {/* HALO
             {userData.map(({ id, data, active }) => (
               <div>
