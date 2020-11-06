@@ -7,9 +7,10 @@ import Link from "next/link";
 import { Skeleton } from "@chakra-ui/core";
 import Head from "next/head";
 
-function Users(props) {
+function Users() {
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(false);
   const data = useMemo(() => {
     return users.map(({ id, data }) => {
       return {
@@ -81,9 +82,10 @@ function Users(props) {
           })
         );
         setIsLoading(false);
+        setError(false);
       } catch (err) {
-        console.log(err);
         setIsLoading(false);
+        setError(true);
       }
     };
     fetch();
@@ -123,7 +125,7 @@ function Users(props) {
               <Skeleton height="20px" my="10px" />
               <Skeleton height="20px" my="10px" />
             </div>
-          ) : (
+          ) : error?<div>There's an error, please refresh the page</div>:(
             <table
               {...getTableProps()}
               className="border-collapse border overflow-x-auto min-w-full"

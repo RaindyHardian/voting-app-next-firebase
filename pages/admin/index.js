@@ -1,87 +1,10 @@
-import firebaseAppp from "../../utils/firebaseConfig";
-import { useState, useEffect, useMemo } from "react";
 import AdminLayout from "../../components/AdminLayout";
 import { ProtectRoute } from "../../context/auth";
-import { useTable, useSortBy } from "react-table";
 import Link from "next/link";
 import Head from "next/head";
 
-function Admin(props) {
-  const [elections, setElections] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const data = useMemo(() => {
-    return elections.map(({ id, election }) => {
-      return {
-        id: id,
-        title: election.title,
-        year: election.year,
-        action: (
-          <Link href={`/admin/election/${id}`}>
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-              View
-            </button>
-          </Link>
-        )
-      };
-    });
-  }, [elections]);
-  const columns = React.useMemo(
-    () => [
-      {
-        Header: "ID",
-        accessor: "id", // accessor is the "key" in the data
-        sortType: "basic"
-      },
-      {
-        Header: "Title",
-        accessor: "title",
-        sortType: "basic"
-      },
-      {
-        Header: "Year",
-        accessor: "year",
-        sortType: "basic"
-      },
-      {
-        Header: "Action",
-        accessor: "action"
-      }
-    ],
-    []
-  );
+function Admin() {
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow
-  } = useTable({ columns, data }, useSortBy);
-
-  useEffect(() => {
-    const fetch = async () => {
-      try {
-        const elections = await firebaseAppp
-          .firestore()
-          .collection("elections")
-          .get();
-        console.log("ELECTIONS");
-        setElections(
-          elections.docs.map(item => {
-            return {
-              id: item.id,
-              election: item.data()
-            };
-          })
-        );
-        setIsLoading(false);
-      } catch (err) {
-        console.log(err);
-        setIsLoading(false);
-      }
-    };
-    fetch();
-  }, []);
   return (
     <AdminLayout>
       <Head>

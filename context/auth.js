@@ -11,12 +11,6 @@ export const AuthProvider = ({ children }) => {
   const [userLoading, setUserLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
 
-  // const [logSuccess, setLogSuccess] = useState(false);
-  // const [logLoading, setLogLoading] = useState(false);
-  // const [loginError, setLoginError] = useState("");
-  // const [emailErr, setEmailErr] = useState("");
-  // const [passwordErr, setPasswordErr] = useState("");
-
   useEffect(() => {
     const unsubscribe = firebaseApp.auth().onAuthStateChanged(authUser => {
       if (authUser) {
@@ -38,7 +32,10 @@ export const AuthProvider = ({ children }) => {
             });
             setIsLoggedIn(true);
             setUserLoading(false);
-          });
+          }).catch(error=>{
+            setIsLoggedIn(false)
+            setUserLoading(false);
+          })
       } else {
         // user has logged out
         setUser(null);
@@ -51,39 +48,6 @@ export const AuthProvider = ({ children }) => {
     };
   }, []);
 
-  // const login = (email, password) => {
-  //   setLogLoading(true);
-  //   firebaseApp
-  //     .auth()
-  //     .signInWithEmailAndPassword(email, password)
-  //     .then(() => {
-  //       setEmailErr("");
-  //       setPasswordErr("");
-  //       setLoginError("");
-  //       setLogLoading(false);
-  //       setLogSuccess(true);
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //       if (err.code === "auth/invalid-email") {
-  //         setEmailErr(err.message);
-  //         setPasswordErr("");
-  //         setLoginError("");
-  //       } else if (err.code === "auth/weak-password") {
-  //         setPasswordErr(err.message);
-  //         setEmailErr("");
-  //         setLoginError("");
-  //       } else {
-  //         setLoginError(err.message);
-  //         setPasswordErr("");
-  //         setEmailErr("");
-  //       }
-  //       setLogLoading(false);
-  //       setLogSuccess(false);
-  //       // else if(err.code === "auth/user-not-found")
-  //       // alert(err.message);
-  //     });
-  // };
   return (
     <AuthContext.Provider
       value={{
@@ -91,12 +55,6 @@ export const AuthProvider = ({ children }) => {
         user,
         isAdmin,
         userLoading
-        // login,
-        // logSuccess,
-        // logLoading,
-        // loginError,
-        // emailErr,
-        // passwordErr
       }}
     >
       {children}
@@ -122,9 +80,6 @@ export function ProtectRoute(Component) {
       if (isLoggedIn && !isAdmin) {
         router.push("/");
       }
-      // if(!isAdmin){
-      //   router.push("/")
-      // }
     }, [userLoading, isLoggedIn, isAdmin]);
 
     return userLoading?null:<Component {...arguments} />;

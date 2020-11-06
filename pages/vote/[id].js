@@ -4,7 +4,7 @@ import firebaseApp from "../../utils/firebaseConfig";
 import { format } from "date-fns";
 import firebase from "firebase";
 import Layout from "../../components/Layout";
-import { Spinner } from "@chakra-ui/core";
+import { Spinner, useToast } from "@chakra-ui/core";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -12,6 +12,7 @@ import Head from "next/head";
 const vote = () => {
   const { user, isLoggedIn } = useAuth();
   const router = useRouter();
+  const toast = useToast();
   const { id } = router.query;
 
   const [elections, setElections] = useState({});
@@ -53,6 +54,15 @@ const vote = () => {
             })
           );
           setCLoading(false);
+        })
+        .catch(err => {
+          toast({
+            title: "Connection Failed",
+            description: "Please retry in a second",
+            status: "error",
+            duration: 8000,
+            isClosable: true
+          });
         });
       // get current user vote status
       firebaseApp
@@ -97,10 +107,24 @@ const vote = () => {
               .then(() => {
                 console.log("success");
               })
-              .catch(err => console.log(err));
+              .catch(err => {
+                toast({
+                  title: "Action Failed.",
+                  description: "Please retry in a second",
+                  status: "error",
+                  duration: 8000,
+                  isClosable: true
+                });
+              });
           })
           .catch(err => {
-            console.log(err);
+            toast({
+              title: "Action Failed.",
+              description: "Please retry in a second",
+              status: "error",
+              duration: 8000,
+              isClosable: true
+            });
           });
       }
     }
@@ -113,6 +137,7 @@ const vote = () => {
       </Head>
       <div className="px-5">
         <div className="flex flex-row items-center justify-center text-2xl mt-3 mb-3 md:mb-6">
+          {!eloading ? <div>{elections.data.title}</div> : null}
           <div className="mr-3">Choose Candidates</div>
           {cLoading ? <Spinner /> : null}
         </div>
@@ -145,7 +170,7 @@ const vote = () => {
                       <button className="bg-indigo-300 hover:bg-indigo-300 text-white tracking-wide py-2 px-10 rounded inline-block cursor-not-allowed">
                         {elections.data.finished
                           ? "Election is Finished"
-                          : "Your already vote"}
+                          : "You're already vote"}
                       </button>
                     ) : (
                       <button

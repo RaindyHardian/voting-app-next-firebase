@@ -72,4 +72,4 @@ function Home() {
   );
 }
 
-export default ProtectRoute(Home);
+export default Home;

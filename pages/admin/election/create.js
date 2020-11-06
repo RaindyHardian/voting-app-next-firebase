@@ -71,7 +71,7 @@ const create = props => {
           setLoading(false);
         });
     } else {
-      setAlertMsg("*Please all the input below");
+      setAlertMsg("*Please fill all the input below");
     }
   };
   return (

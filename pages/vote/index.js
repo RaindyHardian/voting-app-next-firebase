@@ -11,6 +11,7 @@ import Head from "next/head";
 const vote = () => {
   const [elections, setElections] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   useEffect(() => {
     let date = firebase.firestore.Timestamp.now();
     // let date = new Date();
@@ -30,6 +31,10 @@ const vote = () => {
           })
         );
         setLoading(false);
+      })
+      .catch(error => {
+        setLoading(false);
+        setError(true);
       });
   }, []);
 
@@ -46,9 +51,15 @@ const vote = () => {
         </div>
         <div className="grid grid-cols-1 gap-y-5 md:grid-cols-3 md:gap-4 lg:gap-x-4 lg:gap-y-6 lg:grid-cols-4">
           {/* CARD */}
-          {!loading
-            ? elections.map(({ id, data }) => (
-                <div key={id} className="flex flex-col justify-between rounded overflow-hidden shadow-lg">
+          {!loading ? (
+            error ? (
+              <div>There's some error, please refresh the page</div>
+            ) : elections.length > 0 ? (
+              elections.map(({ id, data }) => (
+                <div
+                  key={id}
+                  className="flex flex-col justify-between rounded overflow-hidden shadow-lg"
+                >
                   <div>
                     <img
                       className="object-cover w-full "
@@ -104,7 +115,10 @@ const vote = () => {
                   </div>
                 </div>
               ))
-            : null}
+            ) : (
+              <div>There's no election at the moment</div>
+            )
+          ) : null}
         </div>
       </div>
     </Layout>
