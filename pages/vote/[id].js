@@ -137,7 +137,7 @@ const vote = () => {
       </Head>
       <div className="px-5">
         <div className="flex flex-row items-center justify-center text-2xl mt-3 mb-3 md:mb-6">
-          {!eloading ? <div>{elections.data.title}</div> : null}
+          {!eLoading ? <div>{elections.data.title}</div> : null}
           <div className="mr-3">Choose Candidates</div>
           {cLoading ? <Spinner /> : null}
         </div>

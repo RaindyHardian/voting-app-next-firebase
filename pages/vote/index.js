@@ -21,20 +21,21 @@ const vote = () => {
       .where("active", "==", 1)
       .where("end", ">=", date)
       .get()
-      .then(items => {
+      .then((items) => {
         setElections(
-          items.docs.map(item => {
+          items.docs.map((item) => {
             return {
               id: item.id,
-              data: item.data()
+              data: item.data(),
             };
           })
         );
         setLoading(false);
       })
-      .catch(error => {
+      .catch((error) => {
         setLoading(false);
         setError(true);
+        console.log(error)
       });
   }, []);
 
@@ -49,13 +50,14 @@ const vote = () => {
           <div className="mr-3">Choose Election</div>
           {loading ? <Spinner /> : null}
         </div>
-        <div className="grid grid-cols-1 gap-y-5 md:grid-cols-3 md:gap-4 lg:gap-x-4 lg:gap-y-6 lg:grid-cols-4">
-          {/* CARD */}
-          {!loading ? (
-            error ? (
-              <div>There's some error, please refresh the page</div>
-            ) : elections.length > 0 ? (
-              elections.map(({ id, data }) => (
+
+        {/* CARD */}
+        {!loading ? (
+          error ? (
+            <div className="text-center">There's some error, please refresh the page</div>
+          ) : elections.length > 0 ? (
+            elections.map(({ id, data }) => (
+              <div className="grid grid-cols-1 gap-y-5 md:grid-cols-3 md:gap-4 lg:gap-x-4 lg:gap-y-6 lg:grid-cols-4">
                 <div
                   key={id}
                   className="flex flex-col justify-between rounded overflow-hidden shadow-lg"
@@ -114,12 +116,14 @@ const vote = () => {
                     })()}
                   </div>
                 </div>
-              ))
-            ) : (
-              <div>There's no election at the moment</div>
-            )
-          ) : null}
-        </div>
+              </div>
+            ))
+          ) : (
+            <div  className="text-center">There's no election at the moment</div>
+          )
+        ) : (
+          <div  className="text-center">Loading, Please Wait</div>
+        )}
       </div>
     </Layout>
   );
