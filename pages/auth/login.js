@@ -5,9 +5,11 @@ import Layout from "../../components/Layout";
 import firebaseApp from "../../utils/firebaseConfig";
 // import useAuth from "../../context/auth";
 import { useRouter } from "next/router";
+import { useToast } from "@chakra-ui/core";
 
 export default function login() {
-  const router = useRouter()
+  const router = useRouter();
+  const toast = useToast();
   // const {
   //   login,
   //   logSuccess,
@@ -25,7 +27,7 @@ export default function login() {
   const [emailErr, setEmailErr] = useState("");
   const [passwordErr, setPasswordErr] = useState("");
 
-  const signIn = e => {
+  const signIn = (e) => {
     e.preventDefault();
     // login(email,password)
     firebaseApp
@@ -34,10 +36,16 @@ export default function login() {
       .then(() => {
         // setOpenSignIn(false)
         // alert("SUCCESS");
-        router.push("/")
+        toast({
+          title: "Login Success",
+          status: "success",
+          duration: 8000,
+          isClosable: true,
+        });
+        router.push("/");
       })
-      .catch(err => {
-        console.log(err);
+      .catch((err) => {
+        // console.log(err);
         if (err.code === "auth/invalid-email") {
           setEmailErr(err.message);
           setPasswordErr("");
@@ -95,7 +103,7 @@ export default function login() {
               type="email"
               placeholder="Email"
               value={email}
-              onChange={e => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
             />
             {emailErr !== "" ? (
               <p className="text-red-500 text-xs italic">{emailErr}</p>
@@ -112,7 +120,7 @@ export default function login() {
               type="password"
               placeholder="Password"
               value={password}
-              onChange={e => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
             />
             {passwordErr !== "" ? (
               <p className="text-red-500 text-xs italic">{passwordErr}</p>

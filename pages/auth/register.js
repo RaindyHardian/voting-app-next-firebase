@@ -1,11 +1,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import Head from "next/head";
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router";
 import firebaseApp from "../../utils/firebaseConfig";
+import { useToast } from "@chakra-ui/core";
 
 export default function register(props) {
-  const router = useRouter()
+  const router = useRouter();
+  const toast = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
@@ -16,35 +18,37 @@ export default function register(props) {
   const [emailErr, setEmailErr] = useState("");
   const [passwordErr, setPasswordErr] = useState("");
 
-  const signUp = e => {
+  const signUp = (e) => {
     e.preventDefault();
     if (fullName === "") {
       return setFullNameErr("Please fill this input");
     }
-    if(address=== ""){
-      return setAddressErr("Please fill this input")
+    if (address === "") {
+      return setAddressErr("Please fill this input");
     }
     firebaseApp
       .auth()
       .createUserWithEmailAndPassword(email, password)
-      .then(authUser => {
+      .then((authUser) => {
         authUser.user.updateProfile({
-          displayName: fullName
+          displayName: fullName,
         });
-        firebaseApp
-          .firestore()
-          .collection("users")
-          .doc(authUser.user.uid)
-          .set({
-            fullName: fullName,
-            address : address,
-            email: authUser.user.email,
-            isAdmin : 0
-          });
-        router.push('/')
+        firebaseApp.firestore().collection("users").doc(authUser.user.uid).set({
+          fullName: fullName,
+          address: address,
+          email: authUser.user.email,
+          isAdmin: 0,
+        });
+        toast({
+          title: "Account has been registered successfully",
+          status: "success",
+          duration: 8000,
+          isClosable: true,
+        });
+        router.push("/");
       })
-      .catch(err => {
-        console.log(err);
+      .catch((err) => {
+        // console.log(err);
         if (err.code === "auth/invalid-email") {
           setEmailErr(err.message);
           setPasswordErr("");
@@ -90,7 +94,7 @@ export default function register(props) {
               type="text"
               placeholder="Full Name"
               value={fullName}
-              onChange={e => setFullName(e.target.value)}
+              onChange={(e) => setFullName(e.target.value)}
             />
             {fullNameErr !== "" ? (
               <p className="text-red-500 text-xs italic">{fullNameErr}</p>
@@ -106,7 +110,7 @@ export default function register(props) {
               type="text"
               placeholder="Full Name"
               value={address}
-              onChange={e => setAddress(e.target.value)}
+              onChange={(e) => setAddress(e.target.value)}
             />
             {addressErr !== "" ? (
               <p className="text-red-500 text-xs italic">{addressErr}</p>
@@ -122,7 +126,7 @@ export default function register(props) {
               type="email"
               placeholder="Email"
               value={email}
-              onChange={e => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
             />
             {emailErr !== "" ? (
               <p className="text-red-500 text-xs italic">{emailErr}</p>
@@ -139,7 +143,7 @@ export default function register(props) {
               type="password"
               placeholder="Password"
               value={password}
-              onChange={e => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
             />
             {passwordErr !== "" ? (
               <p className="text-red-500 text-xs italic">{passwordErr}</p>
