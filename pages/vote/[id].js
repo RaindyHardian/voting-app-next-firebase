@@ -136,8 +136,8 @@ const vote = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="px-5">
-        <div className="flex flex-row items-center justify-center text-2xl mt-3 mb-3 md:mb-6">
-          {!eLoading ? <div>{elections.data.title}</div> : null}
+        {!eLoading ? <div className="mt-3 text-lg text-center md:text-2xl">{elections.data.title}</div> : null}
+        <div className="flex flex-row items-center justify-center text-lg mb-3 md:mb-6 md:text-2xl">
           <div className="mr-3">Choose Candidates</div>
           {cLoading ? <Spinner /> : null}
         </div>
