@@ -31,6 +31,9 @@ const vote = () => {
         .doc(id)
         .get()
         .then((item) => {
+          if (item.data().active === 0) {
+            return router.push("/");
+          }
           setElections({
             id: item.id,
             data: item.data(),
@@ -67,7 +70,6 @@ const vote = () => {
         .firestore()
         .collection(`elections/${id}/voter`)
         .doc(user.id)
-        // .get()
         .onSnapshot((item) => {
           console.log(item.data());
           if (item.data() !== undefined) {
@@ -85,6 +87,7 @@ const vote = () => {
         alert("ANDA SUDAH MEMILIH");
       } else {
         const c_id = e.target.attributes.c_id.value;
+        // add user to voter table
         firebaseApp
           .firestore()
           .collection(`elections/${id}/voter`)
@@ -95,6 +98,7 @@ const vote = () => {
             address: user.data.address,
           })
           .then(() => {
+            // Increment the vote count on the specific candidate(c_id) that user choose
             firebaseApp
               .firestore()
               .collection(`elections/${id}/candidates`)
@@ -143,12 +147,13 @@ const vote = () => {
           <div className="mr-3">Choose Candidates</div>
           {cLoading ? <Spinner /> : null}
         </div>
-        <div className="grid grid-cols-1 gap-y-5 md:grid-cols-3 md:gap-4 lg:gap-x-4 lg:gap-y-6 lg:grid-cols-4">
+        <div className="grid gap-y-5 md:grid-cols-3-auto justify-center md:gap-4 lg:gap-x-4 lg:gap-y-6 lg:grid-cols-4-auto">
           {/* CARD */}
           {!cLoading && !vLoading && !eLoading
             ? candidates.map(({ id, data }) => (
                 <div
                   key={id}
+                  style={{ width: "200px" }}
                   className="rounded border border-gray-400 overflow-hidden shadow-lg flex flex-col justify-between py-5"
                 >
                   <div className="px-6">

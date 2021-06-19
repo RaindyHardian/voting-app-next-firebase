@@ -22,7 +22,9 @@ function Home() {
           Welcome to Resident's Chief Voting
         </div>
         <div className="text-md text-center">
-          Click the login button below to start voting
+          {!isLoggedIn
+            ? "Click the login button below to start voting"
+            : "Click the vote button below to start voting"}
         </div>
         <div className="mt-2">
           {userLoading ? (

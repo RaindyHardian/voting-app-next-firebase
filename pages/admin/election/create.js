@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import AdminLayout from "../../../components/AdminLayout";
 import { ProtectRoute } from "../../../context/auth";
 
-const create = props => {
+const create = () => {
   const router = useRouter();
   const toast = useToast();
   const [key, setKey] = useState("");
@@ -24,7 +24,7 @@ const create = props => {
   const [loading, setLoading] = useState(false);
   const [alertMsg, setAlertMsg] = useState("");
 
-  const submit = e => {
+  const submit = (e) => {
     e.preventDefault();
     if (
       key &&
@@ -38,41 +38,71 @@ const create = props => {
       active
     ) {
       setLoading(true);
-      firebaseApp
-        .firestore()
-        .collection("elections")
-        .doc(key)
-        .set({
-          title: title,
-          description: description,
-          year: year,
-          start: firebase.firestore.Timestamp.fromDate(
-            new Date(startDate + " " + startTime)
-          ),
-          end: firebase.firestore.Timestamp.fromDate(
-            new Date(endDate + " " + endTime)
-          ),
-          active: active
+      // Check if the key exists
+      var docRef = firebaseApp.firestore().collection("elections").doc(key);
+      docRef
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            toast({
+              title: "Action failed.",
+              description: "Key already exists",
+              status: "error",
+              duration: 8000,
+              isClosable: true,
+            });
+            setLoading(false);
+          } else {
+            // doc.data() will be undefined in this case
+            // if the key available then add the data to the db
+            firebaseApp
+              .firestore()
+              .collection("elections")
+              .doc(key)
+              .set({
+                title: title,
+                description: description,
+                year: year,
+                start: firebase.firestore.Timestamp.fromDate(
+                  new Date(startDate + " " + startTime)
+                ),
+                end: firebase.firestore.Timestamp.fromDate(
+                  new Date(endDate + " " + endTime)
+                ),
+                active: active,
+              })
+              .then(() => {
+                setLoading(false);
+                setAlertMsg("");
+                toast({
+                  title: "Action succeded.",
+                  description: "Election Created",
+                  status: "success",
+                  duration: 8000,
+                  isClosable: true,
+                });
+                return router.push("/admin/election");
+              })
+              .catch((err) => {
+                toast({
+                  title: "Action failed.",
+                  description: "Please try again",
+                  status: "error",
+                  duration: 8000,
+                  isClosable: true,
+                });
+                setLoading(false);
+              });
+          }
         })
-        .then(() => {
-          setLoading(false);
-          setAlertMsg("");
-          toast({
-            title: "Action succeded.",
-            description: "Election Created",
-            status: "success",
-            duration: 8000,
-            isClosable: true
-          });
-          return router.push("/admin/election");
-        })
-        .catch(err => {
+        .catch((error) => {
+          console.log("Error getting document:", error);
           toast({
             title: "Action failed.",
             description: "Please try again",
-            status: "failed",
+            status: "error",
             duration: 8000,
-            isClosable: true
+            isClosable: true,
           });
           setLoading(false);
         });
@@ -126,7 +156,7 @@ const create = props => {
                   type="text"
                   placeholder="ex: e2017, e2018, etc"
                   value={key}
-                  onChange={e => setKey(e.target.value)}
+                  onChange={(e) => setKey(e.target.value)}
                 />
               </div>
             </div>
@@ -141,7 +171,7 @@ const create = props => {
                   className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                   type="text"
                   value={title}
-                  onChange={e => setTitle(e.target.value)}
+                  onChange={(e) => setTitle(e.target.value)}
                 />
               </div>
             </div>
@@ -156,7 +186,7 @@ const create = props => {
                   className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                   type="text"
                   value={description}
-                  onChange={e => setDescription(e.target.value)}
+                  onChange={(e) => setDescription(e.target.value)}
                 />
               </div>
             </div>
@@ -171,7 +201,7 @@ const create = props => {
                   className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                   type="text"
                   value={year}
-                  onChange={e => setYear(e.target.value)}
+                  onChange={(e) => setYear(e.target.value)}
                 />
               </div>
             </div>
@@ -186,7 +216,7 @@ const create = props => {
                   className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                   type="date"
                   value={startDate}
-                  onChange={e => setStartDate(e.target.value)}
+                  onChange={(e) => setStartDate(e.target.value)}
                 />
               </div>
               <div className="md:w-2/6">
@@ -194,7 +224,7 @@ const create = props => {
                   className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                   type="time"
                   value={startTime}
-                  onChange={e => setStartTime(e.target.value)}
+                  onChange={(e) => setStartTime(e.target.value)}
                 />
               </div>
             </div>
@@ -209,7 +239,7 @@ const create = props => {
                   className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                   type="date"
                   value={endDate}
-                  onChange={e => setEndDate(e.target.value)}
+                  onChange={(e) => setEndDate(e.target.value)}
                 />
               </div>
               <div className="md:w-2/6">
@@ -217,7 +247,7 @@ const create = props => {
                   className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                   type="time"
                   value={endTime}
-                  onChange={e => setEndTime(e.target.value)}
+                  onChange={(e) => setEndTime(e.target.value)}
                 />
               </div>
             </div>
@@ -232,7 +262,7 @@ const create = props => {
                   className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   id="grid-state"
                   value={active}
-                  onChange={e => setActive(parseInt(e.target.value))}
+                  onChange={(e) => setActive(parseInt(e.target.value))}
                 >
                   <option value="1">Active</option>
                   <option value="0">Inactive</option>

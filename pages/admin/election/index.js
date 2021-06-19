@@ -19,7 +19,6 @@ function Admin(props) {
     const unsubscribe = firebaseApp
       .firestore()
       .collection("elections")
-      // .get()
       .onSnapshot((elections) => {
         setElections(
           elections.docs.map((item) => {

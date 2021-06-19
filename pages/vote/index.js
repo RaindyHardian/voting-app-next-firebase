@@ -15,6 +15,7 @@ const vote = () => {
   useEffect(() => {
     let date = firebase.firestore.Timestamp.now();
 
+    // get election data where the status is active and the date range is still available
     firebaseApp
       .firestore()
       .collection("elections")
