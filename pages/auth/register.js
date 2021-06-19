@@ -6,7 +6,7 @@ import firebaseApp from "../../utils/firebaseConfig";
 import { useToast } from "@chakra-ui/core";
 import { ProtectAuthRoute } from "../../context/auth";
 
-export default ProtectAuthRoute(function register() {
+export default ProtectAuthRoute("register", function register() {
   const router = useRouter();
   const toast = useToast();
   const [email, setEmail] = useState("");

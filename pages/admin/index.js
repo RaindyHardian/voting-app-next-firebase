@@ -31,21 +31,3 @@ function Admin() {
   );
 }
 export default ProtectRoute(Admin);
-
-// export async function getStaticProps() {
-//   const elections = await firebaseAppp
-//     .firestore()
-//     .collection("elections")
-//     .get();
-//   const data = elections.docs.map(item => {
-//     return {
-//       id: item.id,
-//       election: item.data()
-//     };
-//   });
-//   return {
-//     props: {
-//       elections: data
-//     }
-//   };
-// }

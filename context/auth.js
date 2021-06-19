@@ -68,6 +68,7 @@ export default function useAuth() {
   return context;
 }
 
+// use to protect the admin route
 export function ProtectRoute(Component) {
   return () => {
     const { isLoggedIn, userLoading, isAdmin } = useAuth();
@@ -86,6 +87,7 @@ export function ProtectRoute(Component) {
   };
 }
 
+// use to protect voting route
 export function ProtectUserRoute(Component) {
   return () => {
     const { isLoggedIn, userLoading } = useAuth();
@@ -99,13 +101,19 @@ export function ProtectUserRoute(Component) {
   };
 }
 
-export function ProtectAuthRoute(Component) {
+// use to protect the login and register route
+export function ProtectAuthRoute(page, Component) {
   return () => {
-    const { isLoggedIn, userLoading } = useAuth();
+    const { isLoggedIn, userLoading, isAdmin } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
-      if (!userLoading && isLoggedIn) router.push("/");
+      if (!userLoading && isLoggedIn) {
+        if (page === "register" && isAdmin) {
+          return;
+        }
+        router.push("/");
+      }
     }, [userLoading, isLoggedIn]);
 
     return userLoading ? null : <Component {...arguments} />;

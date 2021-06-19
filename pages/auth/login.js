@@ -7,7 +7,7 @@ import { ProtectAuthRoute } from "../../context/auth";
 import { useRouter } from "next/router";
 import { useToast } from "@chakra-ui/core";
 
-export default ProtectAuthRoute(function login() {
+export default ProtectAuthRoute("login", function login() {
   const router = useRouter();
   const toast = useToast();
   const [email, setEmail] = useState("");
