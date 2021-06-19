@@ -20,12 +20,12 @@ function Admin(props) {
       .firestore()
       .collection("elections")
       // .get()
-      .onSnapshot(elections => {
+      .onSnapshot((elections) => {
         setElections(
-          elections.docs.map(item => {
+          elections.docs.map((item) => {
             return {
               id: item.id,
-              election: item.data()
+              election: item.data(),
             };
           })
         );
@@ -37,8 +37,7 @@ function Admin(props) {
     };
   }, []);
 
-  const setActiveElection = e => {
-    // console.log(e.target.attributes.e_id.value)
+  const setActiveElection = (e) => {
     let a;
     if (e.target.attributes.activate.value == 1) {
       a = 1;
@@ -50,7 +49,7 @@ function Admin(props) {
       .collection("elections")
       .doc(e.target.attributes.e_id.value)
       .update({
-        active: a
+        active: a,
       })
       .then(() => {
         toast({
@@ -58,44 +57,44 @@ function Admin(props) {
           description: "Election updated",
           status: "success",
           duration: 8000,
-          isClosable: true
+          isClosable: true,
         });
       })
-      .catch(err => {
+      .catch((err) => {
         toast({
           title: "Update failed.",
           description: "Please try again",
           status: "error",
           duration: 8000,
-          isClosable: true
+          isClosable: true,
         });
       });
   };
-  const delElection = e => {
+  const delElection = (e) => {
     e.preventDefault();
     firebaseApp
       .firestore()
       .collection("elections")
       .doc(e.target.attributes.e_id.value)
       .delete()
-      .then(()=>{
+      .then(() => {
         toast({
           title: "Action succeded.",
           description: "Election Deleted",
           status: "error",
           duration: 8000,
-          isClosable: true
+          isClosable: true,
         });
       })
-      .catch(err=>{
+      .catch((err) => {
         toast({
           title: "Action failed.",
           description: "Please try again",
           status: "error",
           duration: 8000,
-          isClosable: true
+          isClosable: true,
         });
-      })
+      });
   };
 
   const data = useMemo(() => {
@@ -143,7 +142,7 @@ function Admin(props) {
               Delete
             </button>
           </div>
-        )
+        ),
       };
     });
   }, [elections]);
@@ -152,33 +151,28 @@ function Admin(props) {
       {
         Header: "ID",
         accessor: "id", // accessor is the "key" in the data
-        sortType: "basic"
+        sortType: "basic",
       },
       {
         Header: "Title",
         accessor: "title",
-        sortType: "basic"
+        sortType: "basic",
       },
       {
         Header: "Year",
         accessor: "year",
-        sortType: "basic"
+        sortType: "basic",
       },
       {
         Header: "Action",
-        accessor: "action"
-      }
+        accessor: "action",
+      },
     ],
     []
   );
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow
-  } = useTable({ columns, data }, useSortBy);
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+    useTable({ columns, data }, useSortBy);
 
   return (
     <AdminLayout>
@@ -220,9 +214,9 @@ function Admin(props) {
               className="border-collapse border overflow-x-auto min-w-full"
             >
               <thead>
-                {headerGroups.map(headerGroup => (
+                {headerGroups.map((headerGroup) => (
                   <tr {...headerGroup.getHeaderGroupProps()}>
-                    {headerGroup.headers.map(column => (
+                    {headerGroup.headers.map((column) => (
                       <th
                         {...column.getHeaderProps(
                           column.getSortByToggleProps()
@@ -246,11 +240,11 @@ function Admin(props) {
               </thead>
 
               <tbody {...getTableBodyProps()}>
-                {rows.map(row => {
+                {rows.map((row) => {
                   prepareRow(row);
                   return (
                     <tr {...row.getRowProps()} className="hover:bg-gray-100">
-                      {row.cells.map(cell => {
+                      {row.cells.map((cell) => {
                         return (
                           <td
                             {...cell.getCellProps()}
@@ -272,21 +266,3 @@ function Admin(props) {
   );
 }
 export default ProtectRoute(Admin);
-
-// export async function getStaticProps() {
-//   const elections = await firebaseAppp
-//     .firestore()
-//     .collection("elections")
-//     .get();
-//   const data = elections.docs.map(item => {
-//     return {
-//       id: item.id,
-//       election: item.data()
-//     };
-//   });
-//   return {
-//     props: {
-//       elections: data
-//     }
-//   };
-// }

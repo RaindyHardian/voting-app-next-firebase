@@ -1,41 +1,29 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import Head from "next/head";
 import Layout from "../../components/Layout";
 import firebaseApp from "../../utils/firebaseConfig";
-// import useAuth from "../../context/auth";
+import { ProtectAuthRoute } from "../../context/auth";
 import { useRouter } from "next/router";
 import { useToast } from "@chakra-ui/core";
 
-export default function login() {
+export default ProtectAuthRoute(function login() {
   const router = useRouter();
   const toast = useToast();
-  // const {
-  //   login,
-  //   logSuccess,
-  //   logLoading,
-  //   loginError,
-  //   emailErr,
-  //   passwordErr
-  // } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // useEffect(() => {
-  //   if (logSuccess && !logLoading) router.push("/");
-  // }, [logLoading, logSuccess]);
+
   const [loginError, setLoginError] = useState("");
   const [emailErr, setEmailErr] = useState("");
   const [passwordErr, setPasswordErr] = useState("");
 
   const signIn = (e) => {
     e.preventDefault();
-    // login(email,password)
+
     firebaseApp
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then(() => {
-        // setOpenSignIn(false)
-        // alert("SUCCESS");
         toast({
           title: "Login Success",
           status: "success",
@@ -45,7 +33,6 @@ export default function login() {
         router.push("/");
       })
       .catch((err) => {
-        // console.log(err);
         if (err.code === "auth/invalid-email") {
           setEmailErr(err.message);
           setPasswordErr("");
@@ -60,8 +47,6 @@ export default function login() {
           setEmailErr("");
         }
         setPassword("");
-        // else if(err.code === "auth/user-not-found")
-        // alert(err.message);
       });
   };
 
@@ -114,7 +99,6 @@ export default function login() {
               Password
             </label>
             <input
-              // className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="password"
               type="password"
@@ -133,16 +117,9 @@ export default function login() {
             >
               Sign In
             </button>
-            <a
-              className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
-              href="#"
-            >
-              Forgot Password?
-            </a>
           </div>
-          {/* {logLoading?'LOADING LOGINNYA': 'DAH SELESE LOADING LOGIN'} */}
         </form>
       </div>
     </Layout>
   );
-}
+});

@@ -4,8 +4,9 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import firebaseApp from "../../utils/firebaseConfig";
 import { useToast } from "@chakra-ui/core";
+import { ProtectAuthRoute } from "../../context/auth";
 
-export default function register(props) {
+export default ProtectAuthRoute(function register() {
   const router = useRouter();
   const toast = useToast();
   const [email, setEmail] = useState("");
@@ -166,4 +167,4 @@ export default function register(props) {
       </div>
     </div>
   );
-}
+});

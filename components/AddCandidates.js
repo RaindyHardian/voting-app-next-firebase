@@ -5,11 +5,10 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
   useDisclosure,
-  useToast
+  useToast,
 } from "@chakra-ui/core";
 import { useTable, useSortBy } from "react-table";
 
@@ -28,9 +27,9 @@ export default function AddCandidates(props) {
       firebaseApp
         .firestore()
         .collection(`elections/${props.election_id}/candidates`)
-        .onSnapshot(items => {
+        .onSnapshot((items) => {
           setCandidateData(
-            items.docs.map(item => {
+            items.docs.map((item) => {
               return item.id;
             })
           );
@@ -43,20 +42,20 @@ export default function AddCandidates(props) {
       .firestore()
       .collection("users")
       .get()
-      .then(items => {
+      .then((items) => {
         setUserData(
-          items.docs.map(item => {
+          items.docs.map((item) => {
             if (candidateData.includes(item.id)) {
               return {
                 id: item.id,
                 data: item.data(),
-                selected: 1
+                selected: 1,
               };
             } else {
               return {
                 id: item.id,
                 data: item.data(),
-                selected: 0
+                selected: 0,
               };
             }
           })
@@ -64,12 +63,12 @@ export default function AddCandidates(props) {
         setLoading(false);
         setError(false);
       })
-      .catch(err => {
+      .catch((err) => {
         setError(true);
       });
   }, [candidateData]);
 
-  const add = e => {
+  const add = (e) => {
     setAddLoading(true);
     firebaseApp
       .firestore()
@@ -81,7 +80,7 @@ export default function AddCandidates(props) {
         user: firebaseApp
           .firestore()
           .doc("users/" + e.target.attributes.user_id.value),
-        vote_count: 0
+        vote_count: 0,
       })
       .then(() => {
         setAddLoading(false);
@@ -90,42 +89,42 @@ export default function AddCandidates(props) {
           description: "Candidate added",
           status: "success",
           duration: 8000,
-          isClosable: true
+          isClosable: true,
         });
       })
-      .catch(err => {
+      .catch((err) => {
         setAddLoading(false);
         toast({
           title: "Error adding candidate",
           description: "Please try again",
           status: "error",
           duration: 8000,
-          isClosable: true
+          isClosable: true,
         });
       });
   };
-  const del = e => {
+  const del = (e) => {
     firebaseApp
       .firestore()
       .collection(`elections/${props.election_id}/candidates`)
       .doc(e.target.attributes.user_id.value)
       .delete()
-      .then(function() {
+      .then(function () {
         toast({
           title: "Action success",
           description: "Candidate removed",
           status: "success",
           duration: 8000,
-          isClosable: true
+          isClosable: true,
         });
       })
-      .catch(function(error) {
+      .catch(function (error) {
         toast({
           title: "Error deleting candidate",
           description: "Please try again",
           status: "error",
           duration: 8000,
-          isClosable: true
+          isClosable: true,
         });
       });
   };
@@ -153,7 +152,7 @@ export default function AddCandidates(props) {
             >
               Cancel
             </button>
-          )
+          ),
       };
     });
   }, [userData]);
@@ -162,28 +161,23 @@ export default function AddCandidates(props) {
       {
         Header: "Full Name",
         accessor: "fullName",
-        sortType: "basic"
+        sortType: "basic",
       },
       {
         Header: "Address",
         accessor: "address",
-        sortType: "basic"
+        sortType: "basic",
       },
       {
         Header: "Action",
-        accessor: "action"
-      }
+        accessor: "action",
+      },
     ],
     []
   );
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow
-  } = useTable({ columns, data }, useSortBy);
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+    useTable({ columns, data }, useSortBy);
 
   return (
     <>
@@ -211,9 +205,9 @@ export default function AddCandidates(props) {
                 className="border-collapse  overflow-x-auto min-w-full"
               >
                 <thead>
-                  {headerGroups.map(headerGroup => (
+                  {headerGroups.map((headerGroup) => (
                     <tr {...headerGroup.getHeaderGroupProps()}>
-                      {headerGroup.headers.map(column => (
+                      {headerGroup.headers.map((column) => (
                         <th
                           {...column.getHeaderProps(
                             column.getSortByToggleProps()
@@ -237,11 +231,11 @@ export default function AddCandidates(props) {
                 </thead>
 
                 <tbody {...getTableBodyProps()}>
-                  {rows.map(row => {
+                  {rows.map((row) => {
                     prepareRow(row);
                     return (
                       <tr {...row.getRowProps()} className="hover:bg-gray-100">
-                        {row.cells.map(cell => {
+                        {row.cells.map((cell) => {
                           return (
                             <td
                               {...cell.getCellProps()}

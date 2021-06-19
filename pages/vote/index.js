@@ -14,7 +14,7 @@ const vote = () => {
   const [error, setError] = useState(false);
   useEffect(() => {
     let date = firebase.firestore.Timestamp.now();
-    // let date = new Date();
+
     firebaseApp
       .firestore()
       .collection("elections")
@@ -35,7 +35,7 @@ const vote = () => {
       .catch((error) => {
         setLoading(false);
         setError(true);
-        console.log(error)
+        console.log(error);
       });
   }, []);
 
@@ -54,7 +54,9 @@ const vote = () => {
         {/* CARD */}
         {!loading ? (
           error ? (
-            <div className="text-center">There's some error, please refresh the page</div>
+            <div className="text-center">
+              There's some error, please refresh the page
+            </div>
           ) : elections.length > 0 ? (
             elections.map(({ id, data }) => (
               <div className="grid grid-cols-1 gap-y-5 md:grid-cols-3 md:gap-4 lg:gap-x-4 lg:gap-y-6 lg:grid-cols-4">
@@ -119,10 +121,10 @@ const vote = () => {
               </div>
             ))
           ) : (
-            <div  className="text-center">There's no election at the moment</div>
+            <div className="text-center">There's no election at the moment</div>
           )
         ) : (
-          <div  className="text-center">Loading, Please Wait</div>
+          <div className="text-center">Loading, Please Wait</div>
         )}
       </div>
     </Layout>

@@ -1,13 +1,11 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import useSWR from "swr";
 import { ProtectRoute } from "../../../context/auth";
 import firebaseApp from "../../../utils/firebaseConfig";
 import { Skeleton, useToast } from "@chakra-ui/core";
 import { format } from "date-fns";
-
 
 import AdminLayout from "../../../components/AdminLayout";
 import CandidatesTable from "../../../components/admin/election/CandidatesTable";
@@ -15,10 +13,6 @@ import VotersTable from "../../../components/admin/election/VotersTable";
 import EditElection from "../../../components/admin/election/EditElection";
 import AddCandidates from "../../../components/AddCandidates";
 
-// const fetcher = async (...args) => {
-//   const res = await fetch(...args);
-//   return res.json();
-// };
 function Election() {
   const router = useRouter();
   const toast = useToast();
@@ -30,12 +24,6 @@ function Election() {
   const [cLoading, setCLoading] = useState(true);
   const [vLoading, setVLoading] = useState(true);
 
-  // const { data } = useSWR(`/api/election/${id}`, fetcher);
-  // if (!data) {
-  //   console.log("LOADING")
-  // } else {
-  //   console.log(data)
-  // }
   useEffect(() => {
     console.log(id);
     if (id) {
@@ -44,7 +32,7 @@ function Election() {
         .firestore()
         .collection(`elections`)
         .doc(id)
-        .onSnapshot(item => {
+        .onSnapshot((item) => {
           setElection(item.data());
           setELoading(false);
         });
@@ -52,12 +40,12 @@ function Election() {
       firebaseApp
         .firestore()
         .collection(`elections/${id}/candidates`)
-        .onSnapshot(items => {
+        .onSnapshot((items) => {
           setCandidates(
-            items.docs.map(item => {
+            items.docs.map((item) => {
               return {
                 id: item.id,
-                data: item.data()
+                data: item.data(),
               };
             })
           );
@@ -68,15 +56,15 @@ function Election() {
         .firestore()
         .collection(`elections/${id}/voter`)
         // .get()
-        .onSnapshot(async items => {
+        .onSnapshot(async (items) => {
           setVoters(
             await Promise.all(
-              items.docs.map(async item => {
+              items.docs.map(async (item) => {
                 const user = await item.data().user.get();
                 return {
                   id: item.id,
                   data: item.data(),
-                  user: user.data()
+                  user: user.data(),
                 };
               })
             )
@@ -86,40 +74,39 @@ function Election() {
     }
   }, [id]);
 
-  const del = e => {
-    // alert(election.id)
+  const del = (e) => {
     firebaseApp
       .firestore()
       .collection(`elections/${id}/candidates`)
       .doc(e.target.attributes.user_id.value)
       .delete()
-      .then(function() {
+      .then(function () {
         toast({
           title: "Delete succeeded.",
           description: "",
           status: "success",
           duration: 8000,
-          isClosable: true
+          isClosable: true,
         });
       })
-      .catch(function(error) {
+      .catch(function (error) {
         toast({
           title: "Error removing candidate",
           description: "Please try again",
           status: "error",
           duration: 8000,
-          isClosable: true
+          isClosable: true,
         });
       });
   };
 
-  const finishElection = e => {
+  const finishElection = (e) => {
     firebaseApp
       .firestore()
       .collection("elections")
       .doc(id)
       .update({
-        finished: true
+        finished: true,
       })
       .then(() => {
         toast({
@@ -127,16 +114,16 @@ function Election() {
           description: "The election is finished",
           status: "success",
           duration: 8000,
-          isClosable: true
+          isClosable: true,
         });
       })
-      .catch(err => {
+      .catch((err) => {
         toast({
           title: "Action failed.",
           description: "Please try again",
           status: "error",
           duration: 8000,
-          isClosable: true
+          isClosable: true,
         });
       });
   };

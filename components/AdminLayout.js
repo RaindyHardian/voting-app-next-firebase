@@ -1,17 +1,14 @@
-import Head from "next/head";
 import Link from "next/link";
-import { useState, useEffect } from "react";
 import firebaseApp from "../utils/firebaseConfig";
 import { useRouter } from "next/router";
 import {
   Drawer,
   DrawerBody,
-  DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
-  useDisclosure
+  useDisclosure,
 } from "@chakra-ui/core";
 
 function AdminLayout({ children }) {

@@ -2,7 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import firebaseApp from "../utils/firebaseConfig";
 import Layout from "../components/Layout";
-import useAuth, { ProtectRoute } from "../context/auth";
+import useAuth from "../context/auth";
 
 function Home() {
   const { user, isAdmin, isLoggedIn, userLoading } = useAuth();
@@ -18,11 +18,7 @@ function Home() {
           src="/svg/undraw_online_connection_6778.svg"
         />
         <div className="text-xl font-bold text-center md:text-3xl">
-          {!userLoading
-            ? user
-              ? `Hi, ${user.data.fullName}. `
-              : null
-            : null}
+          {!userLoading ? (user ? `Hi, ${user.data.fullName}. ` : null) : null}
           Welcome to Resident's Chief Voting
         </div>
         <div className="text-md text-center">

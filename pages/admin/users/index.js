@@ -25,11 +25,8 @@ function Users() {
                 Edit
               </button>
             </Link>
-            {/* <button className="inline-block bg-red-600 hover:bg-red-700 text-white tracking-wide py-2 px-6 rounded">
-              Delete
-            </button> */}
           </div>
-        )
+        ),
       };
     });
   }, [users]);
@@ -38,33 +35,28 @@ function Users() {
       {
         Header: "Full Name",
         accessor: "fullName",
-        sortType: "basic"
+        sortType: "basic",
       },
       {
         Header: "Email",
         accessor: "email",
-        sortType: "basic"
+        sortType: "basic",
       },
       {
         Header: "Address",
         accessor: "address",
-        sortType: "basic"
+        sortType: "basic",
       },
       {
         Header: "Action",
-        accessor: "action"
-      }
+        accessor: "action",
+      },
     ],
     []
   );
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow
-  } = useTable({ columns, data }, useSortBy);
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+    useTable({ columns, data }, useSortBy);
 
   useEffect(() => {
     const fetch = async () => {
@@ -74,10 +66,10 @@ function Users() {
           .collection("users")
           .get();
         setUsers(
-          elections.docs.map(item => {
+          elections.docs.map((item) => {
             return {
               id: item.id,
-              data: item.data()
+              data: item.data(),
             };
           })
         );
@@ -125,15 +117,17 @@ function Users() {
               <Skeleton height="20px" my="10px" />
               <Skeleton height="20px" my="10px" />
             </div>
-          ) : error?<div>There's an error, please refresh the page</div>:(
+          ) : error ? (
+            <div>There's an error, please refresh the page</div>
+          ) : (
             <table
               {...getTableProps()}
               className="border-collapse border overflow-x-auto min-w-full"
             >
               <thead>
-                {headerGroups.map(headerGroup => (
+                {headerGroups.map((headerGroup) => (
                   <tr {...headerGroup.getHeaderGroupProps()}>
-                    {headerGroup.headers.map(column => (
+                    {headerGroup.headers.map((column) => (
                       <th
                         {...column.getHeaderProps(
                           column.getSortByToggleProps()
@@ -157,11 +151,11 @@ function Users() {
               </thead>
 
               <tbody {...getTableBodyProps()}>
-                {rows.map(row => {
+                {rows.map((row) => {
                   prepareRow(row);
                   return (
                     <tr {...row.getRowProps()} className="hover:bg-gray-100">
-                      {row.cells.map(cell => {
+                      {row.cells.map((cell) => {
                         return (
                           <td
                             {...cell.getCellProps()}

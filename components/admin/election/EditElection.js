@@ -11,11 +11,11 @@ import {
   ModalCloseButton,
   useDisclosure,
   Spinner,
-  useToast
+  useToast,
 } from "@chakra-ui/core";
 import { format } from "date-fns";
 
-const EditElection = props => {
+const EditElection = (props) => {
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [title, setTitle] = useState(props.election.title);
@@ -37,7 +37,7 @@ const EditElection = props => {
 
   const [loading, setLoading] = useState(false);
 
-  const submit = e => {
+  const submit = (e) => {
     e.preventDefault();
     setLoading(true);
     firebaseApp
@@ -54,7 +54,7 @@ const EditElection = props => {
         end: firebase.firestore.Timestamp.fromDate(
           new Date(endDate + " " + endTime)
         ),
-        active: active
+        active: active,
       })
       .then(() => {
         setLoading(false);
@@ -63,16 +63,16 @@ const EditElection = props => {
           description: "Election updated",
           status: "success",
           duration: 8000,
-          isClosable: true
+          isClosable: true,
         });
       })
-      .catch(err => {
+      .catch((err) => {
         toast({
           title: "Error saving election",
           description: "Please try again",
           status: "error",
           duration: 8000,
-          isClosable: true
+          isClosable: true,
         });
         setLoading(false);
       });
@@ -115,7 +115,7 @@ const EditElection = props => {
                     className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                     type="text"
                     value={title}
-                    onChange={e => setTitle(e.target.value)}
+                    onChange={(e) => setTitle(e.target.value)}
                   />
                 </div>
               </div>
@@ -130,7 +130,7 @@ const EditElection = props => {
                     className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                     type="text"
                     value={description}
-                    onChange={e => setDescription(e.target.value)}
+                    onChange={(e) => setDescription(e.target.value)}
                   />
                 </div>
               </div>
@@ -145,7 +145,7 @@ const EditElection = props => {
                     className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                     type="text"
                     value={year}
-                    onChange={e => setYear(e.target.value)}
+                    onChange={(e) => setYear(e.target.value)}
                   />
                 </div>
               </div>
@@ -160,7 +160,7 @@ const EditElection = props => {
                     className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                     type="date"
                     value={startDate}
-                    onChange={e => setStartDate(e.target.value)}
+                    onChange={(e) => setStartDate(e.target.value)}
                   />
                 </div>
                 <div className="md:w-1/3">
@@ -168,7 +168,7 @@ const EditElection = props => {
                     className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                     type="time"
                     value={startTime}
-                    onChange={e => setStartTime(e.target.value)}
+                    onChange={(e) => setStartTime(e.target.value)}
                   />
                 </div>
               </div>
@@ -183,7 +183,7 @@ const EditElection = props => {
                     className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                     type="date"
                     value={endDate}
-                    onChange={e => setEndDate(e.target.value)}
+                    onChange={(e) => setEndDate(e.target.value)}
                   />
                 </div>
                 <div className="md:w-1/3">
@@ -191,7 +191,7 @@ const EditElection = props => {
                     className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                     type="time"
                     value={endTime}
-                    onChange={e => setEndTime(e.target.value)}
+                    onChange={(e) => setEndTime(e.target.value)}
                   />
                 </div>
               </div>
@@ -206,7 +206,7 @@ const EditElection = props => {
                     className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                     id="grid-state"
                     value={active}
-                    onChange={e => setActive(parseInt(e.target.value))}
+                    onChange={(e) => setActive(parseInt(e.target.value))}
                   >
                     <option value="1">Active</option>
                     <option value="0">Inactive</option>

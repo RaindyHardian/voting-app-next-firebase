@@ -1,10 +1,8 @@
 import AdminLayout from "../../components/AdminLayout";
 import { ProtectRoute } from "../../context/auth";
-import Link from "next/link";
 import Head from "next/head";
 
 function Admin() {
-
   return (
     <AdminLayout>
       <Head>
@@ -20,7 +18,12 @@ function Admin() {
             Welcome to your dashboard!
           </div>
           <div className="text-gray-700 text-lg">
-            This dashboard is used to manage and control the entire application. You can check all of the page using the navigation bar. This page contains general information about the application. Elections page contains all of the election data that you can manage, view, or edit. Users page contains all of the user data that registered to this app.   
+            This dashboard is used to manage and control the entire application.
+            You can check all of the page using the navigation bar. This page
+            contains general information about the application. Elections page
+            contains all of the election data that you can manage, view, or
+            edit. Users page contains all of the user data that registered to
+            this app.
           </div>
         </div>
       </div>

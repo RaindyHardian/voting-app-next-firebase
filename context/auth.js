@@ -12,15 +12,14 @@ export const AuthProvider = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = firebaseApp.auth().onAuthStateChanged(authUser => {
+    const unsubscribe = firebaseApp.auth().onAuthStateChanged((authUser) => {
       if (authUser) {
-        // setUser(authUser);
         firebaseApp
           .firestore()
           .collection("users")
           .doc(authUser.uid)
           .get()
-          .then(doc => {
+          .then((doc) => {
             if (doc.data().isAdmin == "1") {
               setIsAdmin(true);
             } else {
@@ -28,14 +27,15 @@ export const AuthProvider = ({ children }) => {
             }
             setUser({
               id: doc.id,
-              data: doc.data()
+              data: doc.data(),
             });
             setIsLoggedIn(true);
             setUserLoading(false);
-          }).catch(error=>{
-            setIsLoggedIn(false)
-            setUserLoading(false);
           })
+          .catch((error) => {
+            setIsLoggedIn(false);
+            setUserLoading(false);
+          });
       } else {
         // user has logged out
         setUser(null);
@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }) => {
         isLoggedIn,
         user,
         isAdmin,
-        userLoading
+        userLoading,
       }}
     >
       {children}
@@ -82,7 +82,7 @@ export function ProtectRoute(Component) {
       }
     }, [userLoading, isLoggedIn, isAdmin]);
 
-    return userLoading?null:<Component {...arguments} />;
+    return userLoading ? null : <Component {...arguments} />;
   };
 }
 
@@ -95,6 +95,19 @@ export function ProtectUserRoute(Component) {
       if (!isLoggedIn && !userLoading) router.push("/auth/login");
     }, [userLoading, isLoggedIn]);
 
-    return userLoading?null:<Component {...arguments} />;
+    return userLoading ? null : <Component {...arguments} />;
+  };
+}
+
+export function ProtectAuthRoute(Component) {
+  return () => {
+    const { isLoggedIn, userLoading } = useAuth();
+    const router = useRouter();
+
+    useEffect(() => {
+      if (!userLoading && isLoggedIn) router.push("/");
+    }, [userLoading, isLoggedIn]);
+
+    return userLoading ? null : <Component {...arguments} />;
   };
 }

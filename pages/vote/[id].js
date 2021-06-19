@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
 import useAuth, { ProtectUserRoute } from "../../context/auth";
 import firebaseApp from "../../utils/firebaseConfig";
-import { format } from "date-fns";
 import firebase from "firebase";
 import Layout from "../../components/Layout";
 import { Spinner, useToast } from "@chakra-ui/core";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import Head from "next/head";
 
@@ -32,10 +30,10 @@ const vote = () => {
         .collection("elections")
         .doc(id)
         .get()
-        .then(item => {
+        .then((item) => {
           setElections({
             id: item.id,
-            data: item.data()
+            data: item.data(),
           });
           setELoading(false);
         });
@@ -44,24 +42,24 @@ const vote = () => {
         .firestore()
         .collection(`elections/${id}/candidates`)
         .get()
-        .then(items => {
+        .then((items) => {
           setCandidates(
-            items.docs.map(item => {
+            items.docs.map((item) => {
               return {
                 id: item.id,
-                data: item.data()
+                data: item.data(),
               };
             })
           );
           setCLoading(false);
         })
-        .catch(err => {
+        .catch((err) => {
           toast({
             title: "Connection Failed",
             description: "Please retry in a second",
             status: "error",
             duration: 8000,
-            isClosable: true
+            isClosable: true,
           });
         });
       // get current user vote status
@@ -70,7 +68,7 @@ const vote = () => {
         .collection(`elections/${id}/voter`)
         .doc(user.id)
         // .get()
-        .onSnapshot(item => {
+        .onSnapshot((item) => {
           console.log(item.data());
           if (item.data() !== undefined) {
             setVoted(true);
@@ -81,7 +79,7 @@ const vote = () => {
         });
     }
   }, [id]);
-  const voteCandidate = e => {
+  const voteCandidate = (e) => {
     if (user) {
       if (voted) {
         alert("ANDA SUDAH MEMILIH");
@@ -94,7 +92,7 @@ const vote = () => {
           .set({
             user: firebaseApp.firestore().doc("users/" + user.id),
             name: user.data.fullName,
-            address: user.data.address
+            address: user.data.address,
           })
           .then(() => {
             firebaseApp
@@ -102,28 +100,28 @@ const vote = () => {
               .collection(`elections/${id}/candidates`)
               .doc(c_id)
               .update({
-                vote_count: firebase.firestore.FieldValue.increment(1)
+                vote_count: firebase.firestore.FieldValue.increment(1),
               })
               .then(() => {
                 console.log("success");
               })
-              .catch(err => {
+              .catch((err) => {
                 toast({
                   title: "Action Failed.",
                   description: "Please retry in a second",
                   status: "error",
                   duration: 8000,
-                  isClosable: true
+                  isClosable: true,
                 });
               });
           })
-          .catch(err => {
+          .catch((err) => {
             toast({
               title: "Action Failed.",
               description: "Please retry in a second",
               status: "error",
               duration: 8000,
-              isClosable: true
+              isClosable: true,
             });
           });
       }
@@ -136,7 +134,11 @@ const vote = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="px-5">
-        {!eLoading ? <div className="mt-3 text-lg text-center md:text-2xl">{elections.data.title}</div> : null}
+        {!eLoading ? (
+          <div className="mt-3 text-lg text-center md:text-2xl">
+            {elections.data.title}
+          </div>
+        ) : null}
         <div className="flex flex-row items-center justify-center text-lg mb-3 md:mb-6 md:text-2xl">
           <div className="mr-3">Choose Candidates</div>
           {cLoading ? <Spinner /> : null}

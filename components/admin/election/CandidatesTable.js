@@ -1,14 +1,14 @@
 import { useMemo } from "react";
 import { useTable, useSortBy } from "react-table";
 
-const CandidatesTable = props => {
+const CandidatesTable = (props) => {
   const data = useMemo(() => {
     return props.candidates.map(({ id, data }) => {
       return {
         id: id,
         name: data.name,
         address: data.address,
-        count: props.finished?data.vote_count:'Unfinished',
+        count: props.finished ? data.vote_count : "Unfinished",
         action: props.finished ? (
           <button className="bg-red-300 text-white tracking-wide py-2 px-6 rounded cursor-not-allowed">
             Delete
@@ -21,7 +21,7 @@ const CandidatesTable = props => {
           >
             Delete
           </button>
-        )
+        ),
       };
     });
   }, [props.candidates]);
@@ -30,38 +30,33 @@ const CandidatesTable = props => {
       {
         Header: "ID",
         accessor: "id", // accessor is the "key" in the data
-        sortType: "basic"
+        sortType: "basic",
       },
       {
         Header: "Name",
         accessor: "name",
-        sortType: "basic"
+        sortType: "basic",
       },
       {
         Header: "Address",
         accessor: "address",
-        sortType: "basic"
+        sortType: "basic",
       },
       {
         Header: "Vote Count",
         accessor: "count",
-        sortType: "basic"
+        sortType: "basic",
       },
       {
         Header: "Action",
-        accessor: "action"
-      }
+        accessor: "action",
+      },
     ],
     []
   );
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow
-  } = useTable({ columns, data }, useSortBy);
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+    useTable({ columns, data }, useSortBy);
 
   return (
     <div>
@@ -70,9 +65,9 @@ const CandidatesTable = props => {
         className="border-collapse border overflow-x-auto min-w-full"
       >
         <thead>
-          {headerGroups.map(headerGroup => (
+          {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
+              {headerGroup.headers.map((column) => (
                 <th
                   {...column.getHeaderProps(column.getSortByToggleProps())}
                   className="px-6 py-2 md:py-4 border border-gray-400 text-sm text-left leading-4 text-gray-800 tracking-wider"
@@ -94,11 +89,11 @@ const CandidatesTable = props => {
         </thead>
 
         <tbody {...getTableBodyProps()}>
-          {rows.map(row => {
+          {rows.map((row) => {
             prepareRow(row);
             return (
               <tr {...row.getRowProps()} className="hover:bg-gray-100">
-                {row.cells.map(cell => {
+                {row.cells.map((cell) => {
                   return (
                     <td
                       {...cell.getCellProps()}
